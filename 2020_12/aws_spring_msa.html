@@ -1,0 +1,1508 @@
+<!doctype html>
+<html lang="en">
+  <head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+    <meta charset="utf-8">
+
+<title>AWSで作るマイクロサービス</title>
+
+<meta name="description" content="">
+<meta name="author" content="">
+<meta name="generator" content="reveal-ck 3.9.2">
+
+
+
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+<link rel="stylesheet" href="css/reveal.css">
+<link rel="stylesheet" href="css/theme/black.css" id="theme">
+
+<!-- Code syntax highlighting -->
+<link rel="stylesheet" href="lib/css/zenburn.css">
+
+<link rel="stylesheet" href="css/reveal-ck.css">
+
+
+<!-- Printing and PDF exports -->
+<script>
+  var link = document.createElement( 'link' );
+  link.rel = 'stylesheet';
+  link.type = 'text/css';
+  link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+  document.getElementsByTagName( 'head' )[0].appendChild( link );
+</script>
+
+<!--[if lt IE 9]>
+<script src="lib/js/html5shiv.js"></script>
+<![endif]-->
+
+  </head>
+
+  <body>
+    <p><img src="images/site-qr.png" style="position:absolute; top:0px; right:0px; width:10%" ></p>
+    <div class="reveal">
+  <!-- Any section element inside of this container is displayed as a slide -->
+  <div class="slides">
+    <section id="1" data-background-iframe="https://springfest2020.springframework.jp/" data-background-interactive>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <h3>AWSで作るマイクロサービス</h3>
+    </section>
+    <section id="2">
+      <h6>自己紹介</h6>
+      <p><img src="images/profile.jpg" style="float:left" width="40%"></p>
+      <div style="margin: 20px 0px auto">
+      <ul>
+        <div style="font-size:16px; margin:auto">
+        <li style="margin: 10px 0px 10px">名前：川畑 光平</li>
+        <li style="margin: 10px 0px 10px">所属：NTTデータ デジタル技術部</li>
+        <li style="margin: 10px 0px 10px">今の仕事
+          <ul>
+            <li style="margin: 10px 0px 10px"><span style="font-size:16px">デジタル技術R&D</span></li>
+            <li style="margin: 10px 0px 10px"><span style="font-size:16px">プロジェクト支援</span></li>
+            <li style="margin: 10px 0px 10px"><span style="font-size:16px">AWS社内推進・人材育成</span></li>
+          </ul>
+        </li>
+        <li style="margin: 10px 0px 10px"><a href="https://aws.amazon.com/jp/partners/ambassadors/?cards-body.sort-by=item.additionalFields.ambassadorName&cards-body.sort-order=asc&cards-body.q=kawabata&cards-body.q_operator=AND" target="_blank">APN AWS Top Engineers &amp; Ambassadors Since 2019</a></li>
+        <li style="margin: 10px 0px 10px">マイナビ「ITSearch+」で記事連載中
+          <ul>
+            <li style="margin: 10px 0px 10px">
+              <span style="font-size:16px"><a href="https://news.mynavi.jp/itsearch/series/devsoft/AWS.html" target="_blank">AWSで作るクラウドネイティブアプリケーションの基本</a></span>
+            </li>
+            <li style="margin: 10px 0px 10px">
+              <span style="font-size:16px"><a href="https://news.mynavi.jp/itsearch/series/devsoft/aws_adv.html" target="_blank">AWSで作るクラウドネイティブアプリケーションの応用</a></span>
+            </li>
+            <li style="margin: 10px 0px 10px">
+              <span style="font-size:16px"><a href="https://news.mynavi.jp/itsearch/series/devsoft/AWSAuto.html" target="_blank">AWSで実践! 基盤構築・デプロイ自動化</a></span>
+            </li>
+            <li style="margin: 10px 0px 10px">
+              <span style="font-size:16px"><a href="https://news.mynavi.jp/itsearch/series/devsoft/aws_2.html" target="_blank">AWSで作るマイクロサービス</a></span>
+            </li>
+          </ul>
+        </li>
+        </div>
+      </ul>
+    </section>
+    <section id="3">
+      <h6>このスライドの使い方</h6>
+      <img src="images/how-to-use-slide.png" style="width: 80%" alt="image"><br/>
+      <span style="font-size:20px">
+      ※当スライドは <a href="https://github.com/hakimel/reveal.js" target="_blank">「reveal.js」</a> を使って、GitHub Pages上に作成
+      </span>
+    </section>
+    <section id="4">
+      <section id="4-1">
+      <h6>マイクロサービス化する典型的なユースケース</h6>
+      <div style="margin: 20px 0px 0px">
+      <ul>
+        <div style="font-size:20px;margin:auto">
+        <li style="margin: 30px 0px 10px">新しいビジネスをWebサービスとして立ち上げ、ユーザのフィードバックを迅速に取り込みながらWebサービスの向上・拡充を図りたい</li>
+        <li style="margin: 10px 0px 10px">既存のレガシーなアプリケーションをモダンに作り替えて、機能の一部をサードパーティに公開して新たな収益源としたい</li>
+        <li style="margin: 10px 0px 10px">クラウドにデータを収集し、集約や加工・分析を施して、別のWebサービスとAPI連携させて新たな付加価値を産み出したり、ユーザエクスペリエンスを高めたい</li>
+        </div>
+      </ul>
+      </section>
+      <section id="4-2" data-background="images/microservice-old-school.png" style="background-color:rgba(0,0,0,0.75);">
+        <h6>クラウドネイティブ・マイクロサービスの利点</h6>
+        <ul>
+        <div style="font-size:20px; margin:auto">
+          <li style="margin: 10px 0px 10px">素早くビジネスを立ち上げるため、Webサービスを実現するアプリケーションをクラウド環境上に構築する</li>
+          <li style="margin: 10px 0px 10px">新機能の開発やユーザのフィードバックを迅速に取り込み・反映するため、アプリケーションを細分化して疎結合に構築する</li>
+          <li style="margin: 10px 0px 10px">サービスの利用が増えてきた場合に備えて、利用頻度の高いものをスケール可能にしてビジネス機会を逃さないようにする</li>
+          <li style="margin: 10px 0px 10px">何らかの理由でサービスを中止する場合も、他に影響なく簡単に破棄できる</li>
+        </div>
+        </ul>
+      </section>
+      <section id="4-3">
+        <h6>複雑性とのトレードオフ</h6>
+        <div style="font-size:20px; margin:auto">
+          <table>
+            <colgroup>
+              <col style="width:30%;">
+              <col style="width:70%;">
+            </colgroup>
+            <thead>
+              <tr>
+                <th>アーキテクチャ課題例</th>
+                <th>詳細</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>サービス実行フロー制御</td>
+                <td>処理のオーケストレーション／コレオグラフィといったサービス実行フロー制御、エラーハンドリング方式</td>
+              </tr>
+              <tr>
+                <td>トランザクション管理</td>
+                <td>複数の更新系Backend Serviceを実行する場合の業務トランザクションのロールバックや補償トランザクション</td>
+              </tr>
+              <tr>
+                <td>ステートフル共有データストア</td>
+                <td>アプリケーションにスケーラビリティを持たせることを目的とした、ステートフル(状態)データを共有するためのデータストアの利用や、データストア障害に伴うフェイルオーバー発生時のエラーハンドリング</td>
+              </tr>
+              <tr>
+                <td>サービスディスカバリ方式</td>
+                <td>マイクロサービスが動的にスケールアウト／縮退する場合のBackend Service APIのサービスディスカバリ</td>
+              </tr>
+              <tr>
+                <td>サービス間通信方式</td>
+                <td>Backend Service APIを呼び出す場合の同期／非同期の使い分け、リトライ／サーキットブレイカー処理</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+      <section id="4-4">
+        <h6>複雑性とのトレードオフ</h6>
+        <div style="font-size:20px; margin:auto">
+          <table>
+            <colgroup>
+              <col style="width:30%;">
+              <col style="width:70%;">
+            </colgroup>
+            <thead>
+              <tr>
+                <th>アーキテクチャ課題例</th>
+                <th>詳細</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>サービス認証／認可方式</td>
+                <td>OIDC、OAuth2.0に準拠した、JWTを使ったアクセストークンの連携方式</td>
+              </tr>
+              <tr>
+                <td>ロギング／モニタリング方式</td>
+                <td>アプリケーション／サービスを跨いでトレーサビリティを確保するためのロギング、各サービスごとのモニタリング</td>
+              </tr>
+              <tr>
+                <td>Backend Serviceステートレス化／冪等性</td>
+                <td>スケールアウトを容易にする、Backend Serviceのステートレス化を前提としたREST準拠API規約／ルール(HTTPステータスコードなど)、耐障害性向上のための冪等性をもつ処理実装</td>
+              </tr>
+              <tr>
+                <td>クラウドマネージドサービス連携</td>
+                <td>揮発性であるコンテナ／サーバレス環境下で、データ永続化のためのマネージドストレージやキューを利用する場合の方式</td>
+              </tr>
+              <tr>
+                <td>マルチクライアントにおけるサービス分割</td>
+                <td>Webアプリケーション以外にも、モバイルなどのSPAクライアント、サードパーティサービス連携がある場合のサービス分割／ビジネスロジックの分離方針</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+      <section id="4-5" data-background="images/microservice.png" style="background-color:rgba(0,0,0,0.75);">
+        <p><span style="font-size:24px">[本日のテーマ]</br>AWS+Springでマイクロサービスアプリケーションを構築するポイントを紹介</span></p>
+        <p><span style="font-size:24px"><img class="emoji" alt=":raising_hand:" src="https://github.githubassets.com/images/icons/emoji/unicode/1f64b.png">[注意点]</span></p>
+        <ul>
+          <span style="font-size:20px">
+            <li style="margin: 15px 0px 15px">
+            いまだにこの分野の技術は栄枯盛衰が激しく、各プロダクトの機能追加や新たなサービスの登場によってベストプラクティスは変わっていくので、AWSクラウド上での実装例の1つとして捉えていただきたい。
+            </li>
+            <li style="margin: 15px 0px 15px">
+            マイクロサービスの実現方法に画一的な正解はない。アーキテクチャやサービスの切り方、利用するマネージドサービスやツール、開発プロセスなど、個々のプロジェクトによって異なる。
+            </li>
+            <li style="margin: 15px 0px 15px">
+            AWSのマネージドサービスを可能な限り活用して、できるだけ<u>小さいコストで実現することを目指す(OSSを活用するのはよいが、そのためにEC2立てたり、ライセンス以外のコストも大きい)</u>
+            </li>
+          </span>
+        </ul>
+      </section>
+      <section id="4-6">
+      <h6>Beyond the 12 Factor App</h6>
+      <img src="images/beyond-12-factor-app.png" width="100%" style="border:0; background:rgba(255, 255, 255, 0)" alt="image"><br/>
+      </section>
+      <section id="4-7">
+      <h6>Today's target scope</h6>
+      <img src="images/beyond-12-factor-app-scope.png" width="100%" style="border:0; background:rgba(255, 255, 255, 0)" alt="image"><br/>
+      </section>
+      <section id="4-8">
+          <p><span style="font-size:24px">マイクロサービスアプリケーション構築をサポートするAWSサービス(1)</span></p>
+        <div style="font-size:20px; margin:auto">
+          <table>
+            <colgroup>
+              <col style="width:20%;">
+              <col style="width:80%;">
+            </colgroup>
+            <thead>
+              <tr>
+                <th>サービス名</th>
+                <th>詳細</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Elastic Load Balancing</td>
+                <td>Classic Load Balancer、Application LoadBalancer、Network LoadBalancerで構成されるサービス。ALBでは、各コンテナにデプロイされたマイクロサービスのIP／ポートを意識せずにパスベースでルーティングを行うことができる。詳細は、連載「AWSで作るクラウドネイティブアプリケーションの基本」の第5回を参照のこと。</td>
+              </tr>
+              <tr>
+                <td>Route53</td>
+                <td>通常のDNSサービスに加えて、ECS上にデプロイしたマイクロサービスのサービスレジストリ／ディスカバリ機能やオンプレミスや別のデータセンタからのルーティングなどのリゾルバ機能がある。</td>
+              </tr>
+              <tr>
+                <td>Amazon ECS</td>
+                <td>マイクロサービスアプリケーションがデプロイされたDockerコンテナを実行するコンテナオーケストレーションサービス。コンテナの死活監視やオートスケーリングなどを実行する。詳細は、連載「AWSで作るクラウドネイティブアプリケーションの基本」の第4回を参照のこと。</td>
+              </tr>
+              <tr>
+                <td>Amazon EKS</td>
+                <td>マイクロサービスアプリケーションがデプロイされたコンテナを実行する、オープンソースのコンテナオーケストレーションツールKuberntesのマネージドサービス。機能的にはECSと同等。</td>
+              </tr>
+              <tr>
+                <td>Amazon ElastiCache</td>
+                <td>複数のマイクロサービスアプリケーションのデータ共有のためのキャッシュストレージとして利用できるサービス。詳細は、連載「AWSで作るクラウドネイティブアプリケーションの基本」の第19回を参照。</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+      <section id="4-8">
+          <p><span style="font-size:24px">マイクロサービスアプリケーション構築をサポートするAWSサービス(2)</span></p>
+        <div style="font-size:20px; margin:auto">
+          <table>
+            <colgroup>
+              <col style="width:20%;">
+              <col style="width:80%;">
+            </colgroup>
+            <thead>
+              <tr>
+                <th>サービス名</th>
+                <th>詳細</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Amazon API Gateway</td>
+                <td>マイクロサービスアプリケーションのAPIゲートウェイとして利用できるサービス。REST APIの定義やデプロイ、サービスへのHTTPリクエスト／レスポンス変換などを実行する。詳細は、連載「AWSで作るクラウドネイティブアプリケーションの基本」の第3回を参照のこと。</td>
+              </tr>
+              <tr>
+                <td>AWS Lambda</td>
+                <td>サーバレスでマイクロサービスアプリケーションの実行が可能なサービス。詳細は、連載「AWSで作るクラウドネイティブアプリケーションの基本」の第2回を参照のこと。</td>
+              </tr>
+              <tr>
+                <td>AWS Cognito★</td>
+                <td>認証／認可サービス。外部の認証Providerとの連携や、IAMロールに応じたAWSリソースへのアクセス制御、マルチデバイス間でデータ同期する機能などもある。</td>
+              </tr>
+              <tr>
+                <td>Cloud Map</td>
+                <td>クラウドリソースのDNSサービス。IPアドレスが割り当てられているEC2やRDSなどのAWSリソースに加え、LambdaやDynamoDB、SQSといったARNが割り当てられたリソースに対しても名前解決が可能。</td>
+              </tr>
+              <tr>
+                <td>App Mesh</td>
+                <td>オープンソースのサービスメッシュプロキシEnvoyのマネージドサービス。サービス間の通信、監視、ログやメトリクス出力などを実行できる。</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+      <section id="4-9">
+          <p><span style="font-size:24px">マイクロサービスアプリケーション構築をサポートするAWSサービス(3)</span></p>
+        <div style="font-size:20px; margin:auto">
+          <table>
+            <colgroup>
+              <col style="width:20%;">
+              <col style="width:80%;">
+            </colgroup>
+            <thead>
+              <tr>
+                <th>サービス名</th>
+                <th>詳細</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>AWS X-Ray★</td>
+                <td>マイクロサービスアプリケーションを分析することができるサービス。サービス実行時間の計測やトレース、フィルタリングによる可視化などが行える。</td>
+              </tr>
+              <tr>
+                <td>Amazon SQS</td>
+                <td>マネージドキューサービス。マイクロサービス間の非同期メッセージ連携などで利用する。詳細は、連載「AWSで作るクラウドネイティブアプリケーションの基本」の第28回を参照のこと。</td>
+              </tr>
+              <tr>
+                <td>Amazon SNS</td>
+                <td>Publish/Subscribe型のメッセージ配信サービス。複数のマイクロサービスへメッセージを連携する場合などで利用する。詳細は、連載「AWSで実践！基盤構築・デプロイ自動化」の第18回を参照のこと。</td>
+              </tr>
+              <tr>
+                <td>Amazon MSK (Managed Streaming for Apache Kafka)</td>
+                <td>オープンソースのメッセージキューミドルウェアであるApache Kafkaのマネージドサービス。非同期メッセージ連携などで利用する。Kafkaではデータの流量制御等きめ細やかな設定が可能</td>
+              </tr>
+              <tr>
+                <td>Amazon MQ</td>
+                <td>マイクロサービス間の非同期メッセージ連携などで利用します。メッセージの到達保証を担保したい場合に利用する</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </section>
+    <section id="5">
+      <section id="5-1" data-background="images/telemetry.jpg" style="background-color:rgba(0,0,0,0.75);" >
+      テレメトリー<br/>
+      (Telemetry：遠隔測定法)
+      </section>
+      <section id="5-2" data-background="images/aws-xray.png" style="background-color:rgba(0,0,0,0.75);" >
+        AWS X-Rayを使った分散トレーシング
+      </section>
+      <section id="5-3">
+        [アンケート]AWS X-Rayをご存知ですか？
+        <p><img src="images/question1-qr-code.png" style="float:left" width="40%"></p>
+        <div style="margin: 20px 0px 0px">
+        <ul>
+          <div style="font-size:20px; margin:auto">
+          <li style="margin: 30px 0px 10px">以下の選択肢から答えを選択ください。
+            <ol>
+              <li style="margin: 10px 0px 10px">
+                <span style="font-size:16px">もちろん！ヘビーユーザーです！</span>
+              </li>
+              <li style="margin: 10px 0px 10px">
+                <span style="font-size:16px">軽く触ったことくらいありますよ。</span>
+              </li>
+              <li style="margin: 10px 0px 10px">
+                <span style="font-size:16px">名前くらいなら知ってます。</span>
+              </li>
+              <li style="margin: 10px 0px 10px">
+                <span style="font-size:16px">骨折した時に病院とかで撮るやつのことですかね(・∀・)？</span>
+              </li>
+            </ol>
+          </li>
+          <br/>
+          <li style="margin: 10px 0px 10px">左のQRコードをスマホなどで読み取ってください</li>
+          <li style="margin: 10px 0px 10px">スライドを開いている方は<a href="https://www.menti.com/ar34drvfsj" target="_blank">こちらのリンク</a>から</li>
+          </div>
+        </ul>
+      </section>
+      <section id="5-4">
+      <div style='position: relative; padding-bottom: 56.25%; padding-top: 35px; height: 0; overflow: hidden;'><iframe sandbox='allow-scripts allow-same-origin allow-presentation' allowfullscreen='true' allowtransparency='true' frameborder='0' height='315' src='https://www.mentimeter.com/embed/6214d0366aef639eeaaa3ce96c320a93/4b5d460f1ab3' style='position: absolute; top: 0; left: 0; width: 100%; height: 100%;' width='420'></iframe></div><br/>
+        <p><img src="images/question1-qr-code.png" style="position: absolute;bottom:0px; right:0px; z-index:1" width="10%"></p>
+      </section>
+      <section id="5-5">
+        百聞は一見にしかず：X-Rayとは
+        <p><img src="images/xray-servicemap.png" width="80%"></p>
+      </section>
+      <section id="5-6">
+        百聞は一見にしかず：X-Rayとは
+        <p><img src="images/xray-start-app-trace.png" width="80%"></p>
+      </section>
+      <section id="5-7">
+        X-Rayでメトリクス収集を行う例
+        <p><img src="images/xray-architecture.png" style="border:0px; background:rgba(255, 255, 255, 0)" width="80%"></p>
+      </section>
+      <section id="5-8">
+        X-Rayへメトリクスデータを送信
+        <p><img src="images/xray-send.png" style="border:0px; background:rgba(255, 255, 255, 0)" width="80%"></p>
+      </section>
+      <section id="5-9">
+        [重要]セグメント・サブセグメントの概念
+        <p><img src="images/xray-segment-subsegment.png" style="border:0px; background:rgba(255, 255, 255, 0)" width="80%"></p>
+      </section>
+      <section id="5-10">
+      [設定方法]AWS SDKライブラリ
+        <div style="margin: 0px auto;display:flex;display:-webkit-flex;display:-moz-flex;">
+          <div style="margin:0;-webkit-flex : 1 0 500px;-moz-flex : 1 0 500px;flex : 1 0 500px;">
+            <p><img src="images/xray-sdk.png" style="margin: 0 auto 20px;border:0px; background:rgba(255, 255, 255, 0" width="100%"></p>
+          </div>
+        <pre style="margin:0;-webkit-flex : 1 0 400px;-moz-flex : 1 0 400px;flex : 1 0 400px;">
+          <code style="font-size:8px; margin: 0 20px 0;line-height:1.5em;width:400px" data-trim>
+            <dependencies>
+              <dependency>
+                <groupId>com.amazonaws</groupId>
+                <artifactId>aws-xray-recorder-sdk-core</artifactId>
+              </dependency>
+              <dependency>
+                <groupId>com.amazonaws</groupId>
+                <artifactId>aws-xray-recorder-sdk-apache-http</artifactId>
+              </dependency>
+              <dependency>
+                <groupId>com.amazonaws</groupId>
+                <artifactId>aws-xray-recorder-sdk-aws-sdk</artifactId>
+              </dependency>
+              <dependency>
+                <groupId>com.amazonaws</groupId>
+                <artifactId>aws-xray-recorder-sdk-aws-sdk-instrumentor</artifactId>
+              </dependency>
+              <dependency>
+                <groupId>com.amazonaws</groupId>
+                <artifactId>aws-xray-recorder-sdk-sql</artifactId>
+              </dependency>
+              <dependency>
+                <groupId>com.amazonaws</groupId>
+                <artifactId>aws-xray-recorder-sdk-spring</artifactId>
+              </dependency>
+            </dependencies>
+            <dependencyManagement>
+              <dependencies>
+                <dependency>
+                  <groupId>com.amazonaws</groupId>
+                  <artifactId>aws-xray-recorder-sdk-bom</artifactId>
+                  <version>2.7.1</version>
+                  <type>pom</type>
+                  <scope>import</scope>
+                </dependency>
+              </dependencies>
+            </dependencyManagement>
+          </code>
+        </pre>
+      </div>
+        <span style="font-size:12px; margin:0"><a href="https://docs.aws.amazon.com/ja_jp/xray/latest/devguide/xray-sdk-java.html" target="_blank">公式ドキュメント</a>はv2.4.0に関する記述で最新と異なっているため、
+          <a href="https://github.com/aws/aws-xray-sdk-java" target="_blank">GitHub</a>側を参考にすること。</span>
+      </section>
+      <section id="5-11">
+        <p><span style="font-size:24px"><a href="https://github.com/debugroom/mynavi-sample-aws-microservice/blob/master/frontend-webapp/src/main/java/org/debugroom/mynavi/sample/aws/microservice/frontend/webapp/config/XRayConfig.java" target="_blank">設定クラス</a>のポイント</span></p>
+        <div style="display:flex;display:-webkit-flex;display:-moz-flex;">
+        <pre style="font-size:8px; margin: 0 16px 0;line-height:1.5em; width:400px">
+          <code data-trim>
+            @Aspect//(1)
+            @Configuration
+            @EnableAspectJAutoProxy//(1)
+            public class XRayConfig extends AbstractXRayInterceptor//(2) {
+
+                static {
+                    try{
+                        AWSXRayRecorderBuilder builder = AWSXRayRecorderBuilder.standard()
+                            .withSamplingStrategy(new LocalizedSamplingStrategy(
+                                ResourceUtils.getURL("classpath:sampling-rules.json")));//(3)
+                        AWSXRay.setGlobalRecorder(builder.build());//(4)
+                    }catch (IOException e){
+                        e.printStackTrace();
+                    }
+                }
+
+                @Bean
+                public AWSXRayServletFilter awsXrayServletFitler(){
+                    return new AWSXRayServletFilter("MynaviSampleMicroServiceFrontendApp");
+                    //(5)
+                }
+
+                @Bean
+                public FilterRegistrationBean filterRegistrationBean(){
+                    FilterRegistrationBean filterRegistrationBean =
+                                        new FilterRegistrationBean(awsXrayServletFitler());
+                    filterRegistrationBean.setOrder(Ordered.HIGHEST_PRECEDENCE);//(6)
+                    return filterRegistrationBean;
+                }
+
+                @Bean
+                AmazonDynamoDB amazonDynamoDB(){
+                    return AmazonDynamoDBAsyncClientBuilder.standard()
+                            .withEndpointConfiguration(
+                                new AwsClientBuilder.EndpointConfiguration(
+                                    cloudFormationStackResolver
+                                        .getExportValue(DYNAMODB_ENDPOINT_EXPORT),
+                                    cloudFormationStackResolver
+                                        .getExportValue(DYNAMODB_REGION_EXPORT)))
+                            .withRequestHandlers(new TracingHandler(
+                                AWSXRay.getGlobalRecorder()))//(7)
+                            .build();
+                }
+
+                @Override
+                @Pointcut("@within(com.amazonaws.xray.spring.aop.XRayEnabled) " +
+                        " && execution(* org.debugroom.mynavi.sample.aws.microservice..*.*(..))" )
+                        //(8)
+                protected void xrayEnabledClasses() {
+                }
+
+                @EventListener(ApplicationReadyEvent.class)//(9)
+                public void onStartup(){
+                    AWSXRay.endSegment();
+
+          </code>
+        </pre>
+          <div style="width:auto;-webkit-flex : 1 0 400px;-moz-flex : 1 0 400px;flex : 1 0 400px;">
+          <ol>
+            <div style="font-size:16px; margin:auto">
+            <li style="margin: 15px 0px 15px">@Aspect/@EnableAspectJAutoProxyでAOPの設定を有効化</li>
+            <li style="margin: 15px 0px 15px"><a href="https://github.com/aws/aws-xray-sdk-java/blob/master/aws-xray-recorder-sdk-spring/src/main/java/com/amazonaws/xray/spring/aop/AbstractXRayInterceptor.java" target="_blank">AbstractXRayInterceptor</a>(基本的なAOP設定)を継承</li>
+            <li style="margin: 15px 0px 15px">AWSXRayRecorderBuilderにサンプリングルールを設定</li>
+            <li style="margin: 15px 0px 15px">AWSXRayのGlobalRecoderにAWSXRayRecorderBuilderを設定</li>
+            <li style="margin: 15px 0px 15px">AWSXRayServletFilterにアプリケーション名を設定</li>
+            <li style="margin: 15px 0px 15px">AWSXRayServletFilterで実行順序を優先設定</li>
+            <li style="margin: 15px 0px 15px">AWS SDKクライアントにでGlobalRecoder設定</li>
+            <li style="margin: 15px 0px 15px">収集対象となるクラスのポイントカット定義を設定</li>
+            <li style="margin: 15px 0px 15px">起動時にAWSへのアクセスが実行される場合セグメントを設定</li>
+            </div>
+          </ol>
+          <ul>
+            <div style="font-size:16px; margin:auto">
+              <li style="margin: 15px 0px 15px">CloudFormationスタックから情報を取得する方法は<a href="https://news.mynavi.jp/itsearch/article/devsoft/4948" target="_blank">こちら</a></li>
+            </div>
+          </ul>
+        </div>
+      </div>
+      </section>
+      <section id="5-11">
+        <p><span style="font-size:24px"><a href="https://github.com/debugroom/mynavi-sample-aws-microservice/blob/master/frontend-webapp/src/main/java/org/debugroom/mynavi/sample/aws/microservice/frontend/webapp/config/DevConfig.java" target="_blank">別のサービスを呼び出すときのWebClient設定</a>のポイント</span></p>
+        <div style="display:flex;display:-webkit-flex;display:-moz-flex;">
+        <pre style="font-size:8px; margin: 0 16px 0;line-height:1.5em; width:400px">
+          <code data-trim class="hljs java">
+          @Bean
+          public WebClient userWebClient(){
+              return WebClient.builder()
+                .baseUrl(serviceProperties.getDns())
+                .filter(exchangeFilterFunction()) //(1)
+                .build();
+          }
+
+          private ExchangeFilterFunction exchangeFilterFunction(){
+              return (clientRequest, nextFilter) -> {
+                      Segment segment = AWSXRay.getCurrentSegment();
+                      Subsegment subsegment = AWSXRay.getCurrentSubsegment();
+                      TraceHeader traceHeader = new TraceHeader(segment.getTraceId(),
+                          segment.isSampled() ?
+                              subsegment.getId() : null,
+                          segment.isSampled() ?
+                              TraceHeader.SampleDecision.SAMPLED : TraceHeader.SampleDecision.NOT_SAMPLED);
+                              //(2)
+                      ClientRequest newClientRequest = ClientRequest.from(clientRequest)
+                          .header(TraceHeader.HEADER_KEY, traceHeader.toString())
+                          .build(); //(3)
+                      return nextFilter.exchange(newClientRequest);
+                  };
+          </code>
+        </pre>
+        <div style="width:auto;-webkit-flex : 1 0 400px;-moz-flex : 1 0 400px;flex : 1 0 400px;">
+          <ol>
+            <div style="font-size:16px; margin:auto">
+            <li style="margin: 15px 0px 15px">WebClientのフィルタでTraceIDを付与するHTTPヘッダに付与する</li>
+            <li style="margin: 15px 0px 15px">AWSXRayからセグメント情報を取得し、TraceIDを取得</li>
+            <li style="margin: 15px 0px 15px">TraceIDをリクエストヘッダにセット</li>
+            </div>
+          </ol>
+          <ul>
+            <div style="font-size:16px; margin:auto">
+              <li style="margin: 15px 0px 15px">実装は<a href="https://github.com/aws/aws-xray-sdk-java/blob/master/aws-xray-recorder-sdk-apache-http/src/main/java/com/amazonaws/xray/proxies/apache/http/TracedHttpClient.java" target="_blank">ApacheHTTP Client拡張ライブラリ</a>を参考</li>
+            </div>
+          </ul>
+        </div>
+      </section>
+      <section id="5-11">
+        <p><span style="font-size:24px">収集対象のクラスにアノテーションを付与</span></p>
+        <div style="display:flex;display:-webkit-flex;display:-moz-flex;">
+        <pre style="font-size:8px; margin: 0 16px 0;line-height:1.5em; width:400px">
+          <code data-trim class="hljs java">
+            @XRayEnabled
+            @Controller
+            public class SampleController {
+
+                @GetMapping(value = "/login")
+                public String login(){
+                    return "login";
+                }
+
+                @GetMapping(value= "/portal")
+                public String portal(@AuthenticationPrincipal CustomUserDetails customUserDetails,
+                         Model model, HttpSession httpSession){
+                        //omit
+                    return "portal";
+                }
+          </code>
+        </pre>
+        <pre style="font-size:8px; margin: 0 16px 0;line-height:1.5em; width:400px">
+          <code data-trim class="hljs java">
+            @XRayEnabled
+            @Service
+            public class OrchestrationServiceImpl implements OrchestrationService{
+
+                @Autowired
+                UserResourceRepository userResourceRepository;
+
+                @Override
+                public UserResource getUserResource(String loginId) throws BusinessException {
+                    return userResourceRepository.findOneByLoginId(loginId);
+                }
+          </code>
+          <code data-trim class="hljs java">
+            @XRayEnabled
+            @Component
+            public class UserResourceRepositoryImpl implements UserResourceRepository{
+
+                private static final String SERVICE_NAME = "/backend/user";
+                private static final String API_VERSION = "/api/v1";
+
+                @Autowired
+                WebClient webClient;
+
+                @Override
+                public UserResource findOne(String userId) {
+                    String endpoint = SERVICE_NAME + API_VERSION + "/users/{userId}";
+                    return webClient.get()
+                            .uri(uriBuilder -> uriBuilder.path(endpoint).build(userId))
+                            .retrieve()
+                            .bodyToMono(UserResource.class)
+                            .block();
+                }
+          </code>
+        </pre>
+      </div>
+      </section>
+      <section id="5-12" data-background="images/xray-start-app-trace.png" style="background-color:rgba(0,0,0,0.75);" >
+        <p><span style="font-size:24px">X-Rayを使用するメリット</span></p>
+        <ul>
+          <span style="font-size:20px">
+            <li style="margin: 15px 0px 15px">
+              環境構築が容易(デーモンとアプリケーションの設定だけ)で、すぐに可用性高く使える。
+            </li>
+            <li style="margin: 15px 0px 15px">
+              AWS SDKでSpringAOPを使ったライブラリも提供されており、設定実装も簡単。
+            </li>
+            <li style="margin: 15px 0px 15px">
+              S3やSQS、DynamoDBなどAWSサービスへの呼び出しを通して透過的にメトリクス計測ができる
+            </li>
+            <li style="margin: 15px 0px 15px">
+              AWS Lambdaでの利用他、機械学習サービスDevOps Guruなど他のAWSサービスとも連携できる。
+            </li>
+          </span>
+        </ul>
+      </section>
+    </section>
+    <section id="6">
+      <section id="6-1" data-background="images/authentication.jpg" style="background-color:rgba(0,0,0,0.05);" >
+        認証・認可
+      </section>
+      <section id="6-2">
+      <h6>認証・認可処理の全体像(OIDC/OAuth2)</h6>
+      <img src="images/authentication-authorization-architecture.png" width="100%" style="border:0; background:rgba(255, 255, 255, 0)" alt="image"><br/>
+      </section>
+      <section id="6-3" data-background="images/authentication-authorization-architecture.png" style="background-color:rgba(0,0,0,0.95);" >
+        <p><span style="font-size:24px">なぜOAuth2を使用した認可でマイクロサービスを保護するのか？</span></p>
+        <ul>
+          <span style="font-size:20px">
+            <li style="margin: 15px 0px 15px">
+              サードパーティ含めてクライアントが増えた場合、通常の認証処理だとユーザの管理が煩雑になるので、シンプル化のために
+              サードパーティが個々に取り扱う認証・認可の仕組みに基づいてマイクロサービスにアクセス制御できるようにする。
+            </li>
+            <li style="margin: 15px 0px 15px">
+              JWTによるトークンエンコーディングにより、クライアントが増えた場合のスケーラビリティの確保が容易である
+            </li>
+            <li style="margin: 15px 0px 15px">
+              デファクトスタンダードな認可技術の採用により、様々なプロダクトと連携させたり、品質確保や学習・実装コストの低減を図ることができる。
+            </li>
+          </span>
+        </ul>
+      </section>
+      <section id="6-3" data-background="images/cognito.png" style="background-color:rgba(0,0,0,0.75);">
+          <span style="font-size:24px">OIDCプロバイダとしてAmazon Cognitoで実現する認証・認可<br>
+            <a href="https://aws.amazon.com/jp/blogs/news/webinar-bb-amazon-cognito-2020/" target="_blank">[AWS Black Belt Online Seminar] Amazon Cognito</a>
+          </span>
+      </section>
+      <section id="6-4">
+        <p><span style="font-size:24px">Spring Security OAuth2 Support</span></p>
+        <div style="display:flex;display:-webkit-flex;display:-moz-flex;">
+        <pre style="font-size:12px; margin: 0;line-height:1.5em; width:400px">
+          <code data-trim class="hljs xml">
+            <!-- OAuth2.0 Loginに必要-->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-security</artifactId>
+            </dependency>
+            <!-- バックエンドマイクロサービスの呼び出しに必要-->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-oauth2-client</artifactId>
+            </dependency>
+            <!-- バックエンドマイクロサービスに必要-->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
+            </dependency>
+            <!-- Thymeleafを使用する場合に必要-->
+            <dependency>
+                <groupId>org.thymeleaf.extras</groupId>
+                <artifactId>thymeleaf-extras-springsecurity5</artifactId>
+            </dependency>
+          </code>
+        </pre>
+        <div style="width:auto;-webkit-flex : 1 0 400px;-moz-flex : 1 0 400px;flex : 1 0 400px;">
+          <ul>
+            <div style="font-size:16px; margin:auto">
+              <li style="margin: 15px 0px 15px"><a href="https://docs.spring.io/spring-security/site/docs/5.4.2/reference/html5/#oauth2" target="_blank">Spring Security OAuth→Spring Security5へOAuth2.0機能が移植</a></li>
+              <ul>
+                <li style="margin: 15px 0px 15px">OAuth 2.0 Login</li>
+                <li style="margin: 15px 0px 15px">OAuth 2.0 Client</li>
+                <li style="margin: 15px 0px 15px">OAuth 2.0 Resource Server</li>
+              </ul>
+              <li style="margin: 15px 0px 15px">以前のSpring Security OAuthはメンテナンスモードへ</li>
+              <li style="margin: 15px 0px 15px">OAuth 2.0 Authorization Serverは<a href="https://github.com/spring-projects-experimental/spring-authorization-server" target="_blank">コミュニティプロジェクト</a>へ</li>
+              <li style="margin: 15px 0px 15px">Thymeleafを使用する場合<a href="https://github.com/thymeleaf/thymeleaf-extras-springsecurity" target="_blank">thymeleaf-extras-springsecurity5</a>を追加</li>
+              <li style="margin: 15px 0px 15px">Spring Security 5 OAuthの解説は<a href="https://www.slideshare.net/masatoshitada7/oauth-20spring-security-51-121418814" target="_blank">多田さんのスライド</a>と<a href="https://qiita.com/kazuki43zoo/items/658eabbf0d6a60d3ed89" target="_blank">清水さんのブログ</a>が分かりやすい</li>
+              <li style="margin: 15px 0px 15px">OAuth2の解説は<a href="http://terasolunaorg.github.io/guideline/5.6.0.RELEASE/ja/Security/OAuth.html" target="_blank">TERASOLUNAのガイドライン</a>も参照。<br/>※実装はSpring Security OAuthなので注意</li>
+            </div>
+          </ul>
+        </div>
+        </div>
+      </section>
+      <section id="6-5">
+        <p><span style="font-size:24px">Spring App + Cognitoで認可コードグラントによるOAuth2 Login</span></p>
+      <div style="display:flex;display:-webkit-flex;display:-moz-flex;">
+        <div style="width:auto;-webkit-flex : 1 0 400px;-moz-flex : 1 0 400px;flex : 1 0 400px;">
+          <img src="images/code-grant-flow.png" width="100%" style="border:0; background:rgba(255, 255, 255, 0)" alt="image"><br/>
+        </div>
+        <div style="width:auto;-webkit-flex : 1 0 450px;-moz-flex : 1 0 450px;flex : 1 0 450px;">
+          <ol style="margin-left: 20px;list-style-type:none">
+            <div style="font-size:16px; margin:auto">
+            <li style="margin: 15px 0px 15px">(1)Spring Boot+Spring Securityで実装したWebAppにアクセス</li>
+            <li style="margin: 15px 0px 15px">(1)'Spring SecurityがCognitoのHostedUIにリダイレクト</li>
+            <li style="margin: 15px 0px 15px">(2)Cognitoユーザプールにサインイン</li>
+            <li style="margin: 15px 0px 15px">(3)認証が成功すると再び、Spring Boot WebAppへリダイレクト</li>
+            <li style="margin: 15px 0px 15px">(3)'リダイレクト時に認可コード(AuthorizationCode)をブラウザに返す</li>
+            <li style="margin: 15px 0px 15px">(3)''リダイレクト先のSpring Boot WebAppへ認可コードを送信</li>
+            <li style="margin: 15px 0px 15px">(4)送信されてきた認可コードをCognitoに送信して検証</li>
+            <li style="margin: 15px 0px 15px">(4)'認可コードが正当なものであれば、IDトークンとアクセストークンを返却</li>
+            <li style="margin: 15px 0px 15px">その後、Spring Boot Appの指定されたページへ遷移</li>
+            </div>
+          </ol>
+        </div>
+      </div>
+      </section>
+      <section id="6-6">
+        <p><span style="font-size:24px">Amazon Cognito構築で必要な設定のポイント(1)</span></p>
+      <div style="display:flex;display:-webkit-flex;display:-moz-flex;">
+        <pre style="font-size:12px; margin: 0;line-height:1.5em; width:400px">
+          <code data-trim>
+            Resources:
+              SampleUserPool:                                           #(1)
+                Type: AWS::Cognito::UserPool
+                Properties:
+                  UserPoolName: sample-microservice-userpool
+                  AliasAttributes:
+                    - email
+                  UsernameConfiguration:
+                    CaseSensitive: false
+                  Schema:                                               #(1-a)
+                    - Name: family_name
+                      AttributeDataType: String
+                      Mutable: true
+                      Required: true
+                    - Name: given_name
+                      AttributeDataType: String
+                      Mutable: true
+                      Required: true
+                    - Name: loginId
+                      AttributeDataType: String
+                      Mutable: false
+                      Required: false
+                    - Name: isAdmin
+                      AttributeDataType: Number
+                      Mutable: true
+                      Required: false
+                      NumberAttributeConstraints:
+                        MinValue: "0"
+                        MaxValue: "2"
+                  Policies:
+                    PasswordPolicy: #(1-b)
+                      MinimumLength: 6
+                      RequireLowercase: true
+                      RequireNumbers: false
+                      RequireSymbols: false
+                      RequireUppercase: false
+
+              FrondendWebAppClient:                                    #(2)
+                Type: AWS::Cognito::UserPoolClient
+                Properties:
+                  ClientName: sample-microservice-backend-app
+                  GenerateSecret: true                                 #(2-a)
+                  RefreshTokenValidity: 30
+                  UserPoolId : !Ref SampleUserPool
+                  CallbackURLs:                                        #(2-b)
+                    - http://localhost:8080/login/oauth2/code/cognito
+                  LogoutURLs:                                          #(2-c)
+                    - http://localhost:8080
+                  AllowedOAuthFlows:                                   #(2-d)
+                    - code
+                  AllowedOAuthScopes:                                  #(2-e)
+                    - openid
+                    - aws.cognito.signin.user.admin
+                    - profile
+                  AllowedOAuthFlowsUserPoolClient: true
+                  SupportedIdentityProviders:                          #(2-f)
+                    - COGNITO
+                  ExplicitAuthFlows:                                   #(2-g)
+                    - ALLOW_ADMIN_USER_PASSWORD_AUTH
+                    - ALLOW_REFRESH_TOKEN_AUTH
+          </code>
+        </pre>
+        <div style="width:auto;-webkit-flex : 1 0 450px;-moz-flex : 1 0 450px;flex : 1 0 450px;">
+          <ol style="margin-left:30px">
+            <div style="font-size:14px; margin:auto">
+            <li style="margin: 10px 0px 10px">ユーザプールの構築</li>
+            <ol style="margin-left:10px;list-style-type: lower-latin">
+              <li style="margin: 10px 0px 10px">ユーザディレクトリのスキーマ※カスタム属性も可</li>
+              <li style="margin: 10px 0px 10px">パスワードポリシー</li>
+            </ol>
+            <li style="margin: 10px 0px 10px">アプリケーションクライアントの設定(WebApp)</li>
+            <ol style="margin-left:10px;list-style-type: lower-latin">
+              <li style="margin: 10px 0px 10px">クライアントシークレットを生成</li>
+              <li style="margin: 10px 0px 10px">リダイレクトするコールバックURLを指定</li>
+              <li style="margin: 10px 0px 10px">サインアウトURLを設定</li>
+              <li style="margin: 10px 0px 10px">OAuthフロータイプを認可コードグラントに設定</li>
+              <li style="margin: 10px 0px 10px">OAuthスコープを以下に設定
+                <ul style="margin-left:10px">
+                  <li style="margin: 10px 0px 10px">openid</li>
+                  <li style="margin: 10px 0px 10px">aws.cognito.signin.user.adimin</li>
+                  <li style="margin: 10px 0px 10px">profile</li>
+                </ul>
+              </li>
+              <li style="margin: 10px 0px 10px">サポートするIDプロバイダをCognitoに設定</li>
+              <li style="margin: 10px 0px 10px">認証フローを以下に指定
+                <ul>
+                  <li style="margin: 10px 0px 10px">ADMIN_USER_PASSWORD_AUTH:管理APIユーザー名パスワード認証</li>
+                  <li style="margin: 10px 0px 10px">ALLOW_REFRESH_TOKEN_AUTH:リフレッシュトークンベースの認証</li>
+                </ul>
+              </li>
+            </ol>
+            </div>
+          </ol>
+        </div>
+      </div>
+      </section>
+      <section id="6-7">
+        <p><span style="font-size:24px">Amazon Cognito構築で必要な設定のポイント(2)</span></p>
+      <div style="display:flex;display:-webkit-flex;display:-moz-flex;">
+        <pre style="font-size:12px; margin: 0;line-height:1.5em; width:400px">
+          <code data-trim>
+            Resources:
+              # omit 全スライドからの続き
+
+              SampleUserPoolDomain:                                        #(1)
+                Type: AWS::Cognito::UserPoolDomain
+                Properties:
+                  Domain: debugroom-sample-microservice
+                  UserPoolId: !Ref SampleUserPool
+
+              SampleIdentityPool:                                          #(2)
+                Type: AWS::Cognito::IdentityPool
+                Properties:
+                  IdentityPoolName:  sample-microservice-idpool
+                  AllowUnauthenticatedIdentities: false
+                  CognitoIdentityProviders:
+                    - ClientId:                                          #(2-a)
+                        Ref: BackendAppClient
+                      ProviderName:                                      #(2-b)
+                        Fn::Join:
+                          - ""
+                          - - "cognito-idp."
+                            - !Sub ${AWS::Region}
+                            - ".amazonaws.com/"
+                            - !Ref SampleUserPool
+
+              SampleUnauthenticatedPolicy:                                #(3)
+                Type: AWS::IAM::ManagedPolicy
+                Properties:
+                  PolicyDocument:
+                    Version: "2012-10-17"
+                    Statement:
+                      - Effect: Allow
+                        Action:
+                          - mobileanalytics:PutEvents
+                          - cognito-sync:*
+                        Resource:
+                          - "*"
+              SampleUnauthenticatedRole:                                 #(4)
+                Type: AWS::IAM::Role
+                Properties:
+                  AssumeRolePolicyDocument:
+                    Version: "2012-10-17"
+                    Statement:
+                      - Effect: Allow
+                        Action: "sts:AssumeRoleWithWebIdentity"
+                        Principal:
+                          Federated: cognito-identity.amazonaws.com
+                        Condition:
+                          StringEquals:
+                            "cognito-identity.amazonaws.com:aud": !Ref SampleIdentityPool
+                          ForAnyValue:StringLike:
+                            "cognito-identity.amazonaws.com:amr": unauthenticated
+                  ManagedPolicyArns:
+                    - !Ref SampleUnauthenticatedPolicy
+
+              SampleAuthenticatedPolicy:                                #(5)
+                Type: AWS::IAM::ManagedPolicy
+                Properties:
+                  PolicyDocument:
+                    Version: "2012-10-17"
+                    Statement:
+                      - Effect: Allow
+                        Action:
+                          - mobileanalytics:PutEvents
+                          - cognito-sync:*
+                          - cognito-identity:*
+                        Resource:
+                          - "*"
+              SampleAuthenticatedRole:                                  #(6)
+                Type: AWS::IAM::Role
+                Properties:
+                  AssumeRolePolicyDocument:
+                    Version: "2012-10-17"
+                    Statement:
+                      - Effect: Allow
+                        Action: "sts:AssumeRoleWithWebIdentity"
+                        Principal:
+                          Federated: cognito-identity.amazonaws.com
+                        Condition:
+                          StringEquals:
+                            "cognito-identity.amazonaws.com:aud": !Ref SampleIdentityPool
+                          ForAnyValue:StringLike:
+                            "cognito-identity.amazonaws.com:amr": authenticated
+                  ManagedPolicyArns:
+                    - !Ref SampleAuthenticatedPolicy
+
+              RoleAttachment:                                          #(7)
+                Type: AWS::Cognito::IdentityPoolRoleAttachment
+                Properties:
+                  IdentityPoolId: !Ref SampleIdentityPool
+                  Roles:
+                    unauthenticated : !GetAtt SampleUnauthenticatedRole.Arn
+                    authenticated: !GetAtt SampleAuthenticatedRole.Arn
+          </code>
+        </pre>
+        <div style="width:auto;-webkit-flex : 1 0 450px;-moz-flex : 1 0 450px;flex : 1 0 450px;">
+          <ol>
+            <div style="font-size:16px; margin:auto">
+            <li style="margin: 10px 0px 10px">ユーザプールのドメイン(HostedUIのドメイン)</li>
+            <li style="margin: 10px 0px 10px">IDプールの設定</li>
+            <ul style="margin-left:20px">
+              <li style="margin: 10px 0px 10px">OIDCプロバイダの設定</li>
+                <ol style="margin-left: 20px;list-style-type: lower-latin">
+                  <li style="margin: 10px 0px 10px">アプリクライアントID</li>
+                  <li style="margin: 10px 0px 10px">プロバイダ名(cognito-idp.[region].amazonaws.com/[UserPoolId])</li>
+                </ol>
+              </li>
+            </ul>
+            <li style="margin: 10px 0px 10px">認証されたユーザのIAMポリシー</li>
+            <li style="margin: 10px 0px 10px">認証されたユーザのIAMロール</li>
+            <li style="margin: 10px 0px 10px">認証されてないユーザのIAMポリシー</li>
+            <li style="margin: 10px 0px 10px">認証されてないユーザのIAMロール</li>
+            <li style="margin: 10px 0px 10px">IDプールへのIAMロールのアタッチメント</li>
+            </div>
+          </ol>
+        </div>
+      </div>
+      </section>
+      <section id="6-8" data-background="images/cognito-constraint.png" style="background-color:rgba(0,0,0,0.75);" >
+        <p><span style="font-size:24px">Amazon CogitoをOIDCプロバイダと見たときの制約</span></p>
+        <ul>
+          <span style="font-size:20px">
+            <li style="margin: 15px 0px 15px">
+              イントロスペクションエンドポイントがない→トークンが無効化されているかを知るOIDC準拠のエンドポイントがない
+            </li>
+            <li style="margin: 15px 0px 15px">
+              <a href="https://docs.aws.amazon.com/ja_jp/cognito/latest/developerguide/logout-endpoint.html" target="_blank">ログアウトエンドポイント</a>がOIDC準拠のものと異なる。→Spring Securityのカスタマイズが必要
+            </li>
+            <li style="margin: 15px 0px 15px">
+              その他、OIDCプロバイダとして足りない機能は、外部プロバイダ(Keycloakなど)と連携する。
+            </li>
+          </span>
+        </ul>
+      </section>
+      <section id="6-9">
+        <p><span style="font-size:24px">Cognitoを使用したOAuth2 Login設定クラスのポイント</span></p>
+        <div style="display:flex;display:-webkit-flex;display:-moz-flex;">
+        <pre style="font-size:8px; margin: 0;line-height:1.5em; width:400px">
+          <code data-trim class="hljs java" data-noescape>
+
+            @EnableWebSecurity //(1)
+            public class OAuth2LoginSecurityConfig extends WebSecurityConfigurerAdapter {
+
+                @Autowired
+                ClientRegistrationRepository clientRegistrationRepository; //(2)
+
+                @Override
+                protected void configure(HttpSecurity http) throws Exception {
+                    http.authorizeRequests(
+                            authorize -> authorize
+                                    .antMatchers("/favicon.ico").permitAll()
+                                    .antMatchers("/webjars/*").permitAll()
+                                    .antMatchers("/static/*").permitAll()
+                                    .anyRequest().authenticated())
+                            .oauth2Login(oauth2 -> oauth2         //(3)
+                                    .userInfoEndpoint(userInfo -> userInfo
+                                            .userAuthoritiesMapper(authoritiesMapper())
+                                            .oidcUserService(oidcUserService())))
+                            .logout(logout -> logout              //(3-ii)
+                                    .logoutUrl("/logout")
+                                    .logoutSuccessHandler(oidcLogoutSuccessHandler()));//(3-ii-a)
+                }
+
+                private LogoutSuccessHandler oidcLogoutSuccessHandler(){//(3-ii-b)
+                    CognitoLogoutSuccessHandler cognitoLogoutSuccessHandler =
+                            new CognitoLogoutSuccessHandler(clientRegistrationRepository);
+
+                    cognitoLogoutSuccessHandler.setPostLogoutRedirectUri("{baseUrl}");
+
+                    return cognitoLogoutSuccessHandler;
+
+                }
+
+                private OidcUserService oidcUserService(){//(3-i-a)
+                    OidcUserService oidcUserService = new OidcUserService();
+                    oidcUserService.setOauth2UserService(oAuth2UserService());
+                    return oidcUserService;
+                }
+
+                private OAuth2UserService oAuth2UserService(){//(3-i-b)
+                    Map<String, Class<? extends OAuth2User>> customUserTypes = new HashMap<>();
+                    customUserTypes.put("cognito", CognitoOAuth2User.class);
+                    return new CustomUserTypesOAuth2UserService(customUserTypes);
+                }
+
+                private GrantedAuthoritiesMapper authoritiesMapper(){//(3-i-c)
+                    return authorities -> {
+                        List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
+                        for (GrantedAuthority grantedAuthority : authorities){
+                            grantedAuthorities.add(grantedAuthority);
+                            if(OidcUserAuthority.class.isInstance(grantedAuthority)){
+                                Map<String, Object> attributes = ((OidcUserAuthority)grantedAuthority).getAttributes();
+                                JSONArray groups = (JSONArray) attributes.get("cognito:groups");
+                                String isAdmin = (String) attributes.get("custom:isAdmin");
+                                if(Objects.nonNull(groups) && groups.contains("admin")){
+                                    grantedAuthorities.add( new SimpleGrantedAuthority("ROLE_ADMIN"));
+                                }else if (Objects.nonNull(isAdmin) && Objects.equals(isAdmin, "1")){
+                                    grantedAuthorities.add( new SimpleGrantedAuthority("ROLE_ADMIN"));
+                                }
+                            }
+                        }
+                        return grantedAuthorities;
+                    };
+                }
+            }
+          </code>
+        </pre>
+        <div style="width:auto;-webkit-flex : 1 0 400px;-moz-flex : 1 0 400px;flex : 1 0 400px;">
+          <ol>
+            <div style="font-size:16px; margin:auto">
+              <li style="margin: 15px 0px 15px">Spring Security設定クラスとして@EnableWebSecurityを付与</li>
+              <li style="margin: 15px 0px 15px">OAuth2 Clientを登録したRepository。詳細は次スライド。</li>
+              <li style="margin: 15px 0px 15px">configureメソッドでoauth2Loginを設定</li>
+              <ul style="margin-left:20px;list-style-type: lower-roman">
+                <li style="margin: 15px 0px 15px">ユーザプールのカスタムデータを設定
+                  <ol style="margin-left:20px;list-style-type: lower-latin">
+                    <li style="margin: 15px 0px 15px">カスタムユーザタイプを設定したOAuth2UserServiceをOidcUserServiceに設定する</li>
+                    <li style="margin: 15px 0px 15px">カスタムユーザタイプをOAuth2UserServiceに設定する</li>
+                    <li style="margin: 15px 0px 15px">Cognitoのカスタムパラメータに応じてロールを割り当てる</li>
+                  </ol>
+                </li>
+                <li style="margin: 15px 0px 15px">ログアウトエンドポイントのカスタマイズ</li>
+                  <ol style="margin-left:20px;list-style-type: lower-latin">
+                    <li style="margin: 15px 0px 15px">カスタムLogoutSuccessHandlerを設定する</li>
+                    <li style="margin: 15px 0px 15px"><a href="https://docs.spring.io/spring-security/site/docs/current/reference/html5/#oauth2login-advanced-oidc-logout" target="_blank">LogoutSuccessHanlderのpostLogoutRedirectUriを設定する</a></li>
+                  </ol>
+              </ul>
+            </div>
+          </ol>
+        </div>
+        </div>
+      </section>
+      <section id="6-10">
+        <p><span style="font-size:24px">Cognitoにアクセスするアプリクライアントの設定ポイント</span></p>
+        <div style="display:flex;display:-webkit-flex;display:-moz-flex;">
+        <pre style="font-size:10px; margin: 0;line-height:1.5em; width:400px">
+          <code data-trim class="hljs java" data-noescape>
+
+            @Bean
+            public ClientRegistrationRepository clientRegistrationRepository(){ //(1)
+                return new InMemoryClientRegistrationRepository(cognitoClientRegistration());
+            }
+
+            private ClientRegistration cognitoClientRegistration(){//(2)
+                // omit
+                Map<String, Object> configurationMetadata = new HashMap<>();
+                configurationMetadata.put("end_session_endpoint", domain + "/logout"); //(2-a)
+                return ClientRegistration.withRegistrationId("cognito")
+                        .clientId(clientId)  //(2-b)
+                        .clientSecret(clientSecret) //(2-c)
+                        .clientAuthenticationMethod(ClientAuthenticationMethod.BASIC)
+                        .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+                        .redirectUriTemplate(redirectUri) //(2-d)
+                        .scope("openid", "profile") //(2-e)
+                        .tokenUri(domain + "/oauth2/token") //(2-f)
+                        .authorizationUri(domain + "/oauth2/authorize") //(2-g)
+                        .userInfoUri(domain + "/oauth2/userInfo") //(2-h)
+                        .userNameAttributeName("cognito:username") //(2-i)
+                        .jwkSetUri(jwkSetUri + "/" + userPoolId + "/.well-known/jwks.json") //(2-j)
+                        .clientName("Cognito") //(2-k)
+                        .providerConfigurationMetadata(configurationMetadata) //(2-l)
+                        .build();
+            }
+
+          </code>
+        </pre>
+        <div style="width:auto;-webkit-flex : 1 0 400px;-moz-flex : 1 0 400px;flex : 1 0 400px;">
+          <ol>
+            <div style="font-size:14px; margin:auto">
+            <li style="margin: 10px 0px 10px">ClientRegistrationRepositoryをBean定義</li>
+            <li style="margin: 10px 0px 10px">ClientRegistrationを設定</li>
+              <ol style="margin-left:20px;list-style-type: lower-latin">
+                <li style="margin: 10px 0px 10px">ログアウトエンドポイントのURLを作成</li>
+                <li style="margin: 10px 0px 10px">Cognitoで作成されたクライアントIDを設定</li>
+                <li style="margin: 10px 0px 10px">Cognitoで作成されたクライアントシークレットを設定</li>
+                <li style="margin: 10px 0px 10px">スコープは"openid"、"profile"を設定</li>
+                <li style="margin: 10px 0px 10px">Cognitoで設定したリダイレクトURLを設定</li>
+                <li style="margin: 10px 0px 10px"><a href="https://docs.aws.amazon.com/ja_jp/cognito/latest/developerguide/token-endpoint.html" target="_blank">トークンエンドポイント</a>を設定</li>
+                <li style="margin: 10px 0px 10px"><a href="https://docs.aws.amazon.com/ja_jp/cognito/latest/developerguide/authorization-endpoint.html" target="_blank">認可エンドポイント</a>を設定</li>
+                <li style="margin: 10px 0px 10px"><a href="https://docs.aws.amazon.com/ja_jp/cognito/latest/developerguide/userinfo-endpoint.html" target="_blank">USERINFOエンドポイント</a>を設定</li>
+                <li style="margin: 10px 0px 10px">Cognitoスキーマで定義したユーザ名(cognito:username)を設定</li>
+                <li style="margin: 10px 0px 10px">作成したCognitoユーザプールの公開鍵のURLを設定</li>
+                <li style="margin: 10px 0px 10px">クライアント名を設定</li>
+                <li style="margin: 10px 0px 10px">ログアウトエンドポイントを設定したメタデータを設定</li>
+              </ol>
+            </div>
+          </ol>
+        </div>
+        </div>
+      </section>
+      <section id="6-11">
+        <p><span style="font-size:24px">[参考]LogoutSuccessHandlerとユーザ情報クラスのカスタマイズ</span></p>
+        <div style="display:flex;display:-webkit-flex;display:-moz-flex;">
+        <div style="width:auto;-webkit-flex : 1 0 400px;-moz-flex : 1 0 400px;flex : 1 0 400px;">
+        <pre style="font-size:10px; margin: 0;line-height:1.5em; width:440px; height:350px">
+          <code style="height:300px" data-trim class="hljs java" data-noescape>
+
+            public class CognitoLogoutSuccessHandler extends SimpleUrlLogoutSuccessHandler {
+
+                private final ClientRegistrationRepository clientRegistrationRepository;
+
+                private  String postLogoutRedirectUri;
+
+                public CognitoLogoutSuccessHandler(ClientRegistrationRepository clientRegistrationRepository){
+                    Assert.notNull(clientRegistrationRepository, "clientRegistrationRepository cannot be null");
+                    this.clientRegistrationRepository = clientRegistrationRepository;
+                }
+
+                @Override
+                protected String determineTargetUrl(HttpServletRequest request, HttpServletResponse response,
+                                                    Authentication authentication) {
+                    String targetUrl = null;
+                    URI endSessionEndpoint;
+                    if (authentication instanceof OAuth2AuthenticationToken && authentication.getPrincipal() instanceof OidcUser) {
+                        String registrationId = ((OAuth2AuthenticationToken) authentication).getAuthorizedClientRegistrationId();
+                        ClientRegistration clientRegistration = this.clientRegistrationRepository
+                                .findByRegistrationId(registrationId);
+                        endSessionEndpoint = this.endSessionEndpoint(clientRegistration);
+                        if (endSessionEndpoint != null) {
+                            URI postLogoutRedirectUri = postLogoutRedirectUri(request);
+                            <mark>targetUrl = endpointUri(endSessionEndpoint, clientRegistration, postLogoutRedirectUri);</mark>
+                        }
+                    }
+                    if (targetUrl == null) {
+                        targetUrl = super.determineTargetUrl(request, response);
+                    }
+
+                    return targetUrl;
+                }
+
+                private URI endSessionEndpoint(ClientRegistration clientRegistration) {
+                    URI result = null;
+                    if (clientRegistration != null) {
+                        Object endSessionEndpoint = clientRegistration.getProviderDetails().getConfigurationMetadata()
+                                .get("end_session_endpoint");
+                        if (endSessionEndpoint != null) {
+                            result = URI.create(endSessionEndpoint.toString());
+                        }
+                    }
+
+                    return result;
+                }
+
+                private String idToken(Authentication authentication) {
+                    return ((OidcUser) authentication.getPrincipal()).getIdToken().getTokenValue();
+                }
+
+                private URI postLogoutRedirectUri(HttpServletRequest request) {
+                    if (this.postLogoutRedirectUri == null) {
+                        return null;
+                    }
+                    UriComponents uriComponents = UriComponentsBuilder.fromHttpUrl(UrlUtils.buildFullRequestUrl(request))
+                            .replacePath(request.getContextPath())
+                            .replaceQuery(null)
+                            .fragment(null)
+                            .build();
+                    return UriComponentsBuilder.fromUriString(this.postLogoutRedirectUri)
+                            .buildAndExpand(Collections.singletonMap("baseUrl", uriComponents.toUriString()))
+                            .toUri();
+                }
+
+                private String endpointUri(URI endSessionEndpoint, ClientRegistration clientRegistration, URI postLogoutRedirectUri) {
+                    UriComponentsBuilder builder = UriComponentsBuilder.fromUri(endSessionEndpoint);
+                    <mark>builder.queryParam("client_id", clientRegistration.getClientId());
+                    if (postLogoutRedirectUri != null) {
+                        builder.queryParam("logout_uri", postLogoutRedirectUri);
+                    }</mark>
+                    return builder.encode(StandardCharsets.UTF_8).build().toUriString();
+                }
+
+                public void setPostLogoutRedirectUri(String postLogoutRedirectUri) {
+                    Assert.notNull(postLogoutRedirectUri, "postLogoutRedirectUri cannot be null");
+                    this.postLogoutRedirectUri = postLogoutRedirectUri;
+                }
+            }
+
+          </code>
+        </pre>
+          <ul style="margin-left:10px;">
+            <div style="font-size:14px; margin:auto">
+            <li style="margin: 10px 0px 10px"><a href="https://github.com/debugroom/sample-spring-security/blob/master/management-app/src/main/java/org/debugroom/sample/spring/security/management/app/web/security/CognitoLogoutSuccessHandler.java" target="_blank">Cognitoのログアウトエンドポイントをカスタマイズするクラス</a></li>
+            <li style="margin: 10px 0px 10px"><a href="https://docs.aws.amazon.com/ja_jp/cognito/latest/developerguide/token-endpoint.html" target="_blank">OidcClientInitiatedLogoutSuccessHandler</a>を参考に実装<br/>Finalクラスだったため、オーバーライドできず、URLを差し替える部分だけ変えて後は同じ</li>
+            <li style="margin: 10px 0px 10px">黄色のエリアが修正箇所</li>
+            </div>
+          </ul>
+        </div>
+        <div style="width:auto;-webkit-flex : 1 0 400px;-moz-flex : 1 0 400px;flex : 1 0 400px;">
+          <pre style="font-size:10px; margin: 0;line-height:1.5em; width:450px; height:350px">
+            <code style="height:300px" data-trim class="hljs java" data-noescape>
+
+              @AllArgsConstructor
+              @NoArgsConstructor
+              @Builder
+              @Data
+              public class CognitoOAuth2User implements OAuth2User, Serializable {
+
+                  private Set<GrantedAuthority> authorities;
+                  private Map<String, Object> attributes;
+                  private String nameAttributeKey;
+                  private String sub;
+                  private String email_verified;
+                  private String name;
+                  private String given_name;
+                  private String family_name;
+                  private String email;
+                  private String username;
+                  <mark>@JsonProperty("custom:isAdmin")</mark>
+                  private int isAdmin;
+
+            </code>
+          </pre>
+          <ul style="margin-left:10px">
+            <div style="font-size:14px; margin:auto">
+            <li style="margin: 10px 0px 10px"><a href="https://github.com/debugroom/sample-spring-security/blob/master/management-app/src/main/java/org/debugroom/sample/spring/security/management/app/web/security/CognitoOAuth2User.java" target="_blank">Cognitoから返却されるユーザ情報クラス</a></li>
+            <li style="margin: 10px 0px 10px">Cognitoのユーザプールスキーマで設定したカスタム属性は「custom:」接頭辞でのJSONパラメータとなるため、明示的にプロパティ名を付与する</li>
+            </div>
+          </ul>
+        </div>
+        </div>
+      </section>
+      <section id="6-12">
+        <p><span style="font-size:16px">Spring Security OAuth2 ResourceServer機能で保護されたマイクロサービスへのアクセス</span></p>
+      <div style="display:flex;display:-webkit-flex;display:-moz-flex;">
+        <div style="width:auto;-webkit-flex : 1 0 600px;-moz-flex : 1 0 600px;flex : 1 0 600px;">
+          <img src="images/oauth2-client.png" width="100%" style="border:0; background:rgba(255, 255, 255, 0)" alt="image"><br/>
+        </div>
+        <div style="width:auto;-webkit-flex : 1 0 300px;-moz-flex : 1 0 300px;flex : 1 0 300px;">
+          <ol style="margin-left: 20px;list-style-type:none">
+            <div style="font-size:16px; margin:auto">
+            <li style="margin: 15px 0px 15px">(0)これまでの説明通り、Cognitoを使ってOAuth2 Loginしていることが前提</li>
+            <li style="margin: 15px 0px 15px">(0)'保護対象となるリソースサーバ(マイクロサービス)はAP起動時にCognitoからJWTをでコードするための公開鍵を取得しておく</li>
+            <li style="margin: 15px 0px 15px">(1)ユーザがアプリケーションへアクセス</li>
+            <li style="margin: 15px 0px 15px">(2)バックエンドサービスを呼び出す
+              <ul style="margin-left:20px">
+                <li style="margin: 10px 0px 10px">バックエンドを呼び出す際にHTTPヘッダにアクセストークンを付与</li>
+                <li style="margin: 10px 0px 10px">バックエンドサービスはSpring Securityがフィルタでトークンの有効性を検証</li>
+              </ul>
+            </li>
+            </div>
+          </ol>
+        </div>
+      </div>
+    </section>
+    <section id="6-13" >
+      <p><span style="font-size:24px">WebClientでバックエンドマイクロサービスを呼び出すポイント</span></p>
+      <div style="display:flex;display:-webkit-flex;display:-moz-flex;">
+      <div style="width:auto;-webkit-flex : 1 0 400px;-moz-flex : 1 0 400px;flex : 1 0 400px;">
+        <img src="images/bearer-token.png" width="100%" style="border:0; margin: 0;background:rgba(255, 255, 255, 0)" alt="image">
+        <ul style="margin-left:20px">
+          <div style="font-size:14px; margin:auto">
+          <li style="margin: 10px 0px 10px">AuthorizationヘッダにBear接頭辞+アクセストークンを設定</li>
+          <ol style="margin-left:20px">
+            <li style="margin: 10px 0px 10px"><a href="https://docs.spring.io/spring-security/site/docs/current/reference/html5/#webclient" target="_blank">ServletOAuth2AuthorizedClientExchangeFilterFunctionを作成し、WebClientに設定</a></li>
+            <li style="margin: 10px 0px 10px">baseUrlにALBのドメインを設定しておく</li>
+          </ol>
+          </div>
+        </ul>
+      </div>
+      <div style="width:auto;-webkit-flex : 1 0 400px;-moz-flex : 1 0 400px;flex : 1 0 400px;">
+        <pre style="font-size:10px; margin: 0;line-height:1.5em; width:400px">
+          <code data-trim class="hljs java" data-noescape>
+              @Bean
+              public WebClient webClient(OAuth2AuthorizedClientManager authorizedClientManager){
+                  ServletOAuth2AuthorizedClientExchangeFilterFunction oauth2Client =
+                          new ServletOAuth2AuthorizedClientExchangeFilterFunction(authorizedClientManager);
+                  oauth2Client.setDefaultClientRegistrationId("cognito");
+                  return WebClient.builder()
+                          .baseUrl(serviceProperties.getDns())
+                          .apply(oauth2Client.oauth2Configuration())
+                          .build();
+          </code>
+        </pre>
+        <pre style="font-size:10px; margin: 0;line-height:1.5em; width:400px">
+          <code data-trim class="hljs java" data-noescape>
+          @Autowired
+          WebClient webClient;
+
+          @Override
+          public UserResource findOne(String userId) {
+              String endpoint = SERVICE_NAME + API_VERSION + "/users/{userId}";
+              return webClient.get()
+                      .uri(uriBuilder -> uriBuilder
+                              .path(endpoint).build(userId))
+                      .retrieve()
+                      .bodyToMono(UserResource.class)
+                      .block();
+          }
+          </code>
+        </pre>
+      </div>
+      </div>
+    </section>
+    <section id="6-14">
+      <p><span style="font-size:24px">バックエンドマイクロサービスにSpring Securityを適用</span></p>
+      <div style="display:flex;disply:-webkit-flex;display:-moz-flex;">
+        <div style="width:auto;-webkit-flex : 1 0 400px;-moz-flex : 1 0 400px;flex : 1 0 400px;">
+          <img src="images/bearer-token.png" width="100%" style="border:0; background:rgba(255, 255, 255, 0)" alt="image"><br/>
+        </div>
+        <div style="width:auto;-webkit-flex : 1 0 400px;-moz-flex : 1 0 400px;flex : 1 0 400px;">
+          <pre style="font-size:10px; margin: 0;line-height:1.5em; width:400px">
+            <code data-trim class="hljs java" data-noescape>
+          @EnableWebSecurity
+          public class CognitoAuthorizationConfig extends WebSecurityConfigurerAdapter {
+
+              @Value("${cognito.oauth2.jwk-set-uri}")
+              private String jwkSetUri;
+
+              @Value("${cognito.oauth2.ssm.user-pool-id}")
+              private String userPoolIdParamName;
+
+              // omit
+
+              @Override
+              protected void configure(HttpSecurity http) throws Exception {
+                  http.authorizeRequests(
+                          authorize -> authorize.anyRequest().authenticated())
+                          .oauth2ResourceServer(oauth2 -> oauth2.jwt( //(1)
+                                  jwt -> jwt.jwkSetUri(jwkSetUri + "/" + userPoolId + "/.well-known/jwks.json") //(2)
+                          ));
+              }
+           </code>
+         </pre>
+        </div>
+      </div>
+          <ol>
+            <div style="font-size:16px; margin:auto">
+            <li style="margin: 10px 0px 10px">OAuth2.0 ResourceServer機能を有効化</li>
+            <li style="margin: 10px 0px 10px">JWK-Set-URIに公開鍵のURL(https://cognito-idp.[region].amazonaws.com/[user-pool-id]/.well-known/jwks.json)を設定</li>
+            </div>
+          </ol>
+      </section>
+      <section id="6-15">
+        <p><span style="font-size:24px">Amazon CognitoをOIDCプロバイダとして使用するメリット</span></p>
+        <div style="display:flex;disply:-webkit-flex;display:-moz-flex;">
+          <div style="width:auto;-webkit-flex : 1 0 400px;-moz-flex : 1 0 400px;flex : 1 0 400px;">
+            <ul>
+              <span style="font-size:20px">
+              <li style="margin: 15px 0px 15px">
+                環境構築が容易(CloudFormation設定だけ)で、すぐに可用性高く使える。
+              </li>
+              <li style="margin: 15px 0px 15px">
+              <a href="https://docs.aws.amazon.com/ja_jp/elasticloadbalancing/latest/application/listener-authenticate-users.html" target="_blank">ALBとの連携も容易で右の図のような構成も可能</a><br/>
+              ※従来通り、API Gateway + Cognitoの構成でもよい
+             </li>
+             <li style="margin: 15px 0px 15px">
+             AWS Lambdaでの利用など、他のAWSサービスとも連携できる。
+             </li>
+             </span>
+           </ul>
+          </div>
+          <div style="width:auto;-webkit-flex : 1 0 400px;-moz-flex : 1 0 400px;flex : 1 0 400px;">
+            <img src="images/alb-oauth2-login.png" width="100%" style="border:0; background:rgba(255, 255, 255, 0)" alt="image"><br/>
+          </div>
+        </div>
+      </section>
+
+    </section>
+    <section id="7">
+      <h6>ご静聴ありがとうございました <img class="emoji" alt=":bow:" src="https://github.githubassets.com/images/icons/emoji/unicode/1f647.png"></h6>
+    </section>
+  </div>
+</div>
+
+<script src="lib/js/head.min.js"></script>
+<script src="js/reveal.js"></script>
+
+<script>
+  (function() {
+  function extend( a, b ) {
+    for(var i in b) {
+      a[i] = b[i];
+    }
+  }
+  var baseOptions = {
+    transition: 'page',
+
+    dependencies: [
+      { src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+      { src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+      { src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+      { src: 'plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+      { src: 'plugin/zoom-js/zoom.js', async: true },
+      { src: 'plugin/notes/notes.js', async: true }
+    ]
+  };
+
+
+
+  var configOptions = {"autoSlide":0,"loop":false,"slideNumber":true,"autoPlayMedia":true}
+  var initializeOptions = {};
+  extend(initializeOptions, baseOptions);
+  extend(initializeOptions, configOptions);
+  Reveal.initialize(initializeOptions);
+})();
+
+</script>
+
+  </body>
+</html>
+    </section>
+  </div>
+
+</div>
+
+<script src="lib/js/head.min.js"></script>
+<script src="js/reveal.js"></script>
+
+
+<script>
+  (function() {
+  function extend( a, b ) {
+    for(var i in b) {
+      a[i] = b[i];
+    }
+  }
+  var baseOptions = {
+    transition: 'page',
+
+    dependencies: [
+      { src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+      { src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+      { src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+      { src: 'plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+      { src: 'plugin/zoom-js/zoom.js', async: true },
+      { src: 'plugin/notes/notes.js', async: true }
+    ]
+  };
+
+
+
+  var configOptions = {"autoSlide":0,"loop":false,"slideNumber":true,"autoPlayMedia":true}
+  var initializeOptions = {};
+  extend(initializeOptions, baseOptions);
+  extend(initializeOptions, configOptions);
+  Reveal.initialize(initializeOptions);
+})();
+
+</script>
+
+  </body>
+</html>
