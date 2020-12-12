@@ -56,38 +56,41 @@
     </section>
     <section id="2">
       <h6>自己紹介</h6>
-      <p><img src="images/profile.jpg" style="float:left" width="40%"></p>
-      <div style="margin: 20px 0px auto">
-      <ul>
-        <div style="font-size:16px; margin:auto">
-        <li style="margin: 10px 0px 10px">名前：川畑 光平</li>
-        <li style="margin: 10px 0px 10px">所属：NTTデータ デジタル技術部</li>
-        <li style="margin: 10px 0px 10px">今の仕事
+      <div style="display:flex;disply:-webkit-flex;display:-moz-flex;">
+        <div style="width:auto;-webkit-flex : 1 0 400px;-moz-flex : 1 0 400px;flex : 1 0 400px;">
+          <img src="images/profile.jpg" style="float:left" width="100%">
+        </div>
+        <div style="width:auto;-webkit-flex : 1 0 400px;-moz-flex : 1 0 400px;flex : 1 0 400px;">
+        <ul>
+          <div style="font-size:16px; margin:auto">
+          <li style="margin: 10px 0px 10px">名前：川畑 光平</li>
+          <li style="margin: 10px 0px 10px">所属：NTTデータ デジタル技術部</li>
+          <li style="margin: 10px 0px 10px">今の仕事
           <ul>
             <li style="margin: 10px 0px 10px"><span style="font-size:16px">デジタル技術R&D</span></li>
             <li style="margin: 10px 0px 10px"><span style="font-size:16px">プロジェクト支援</span></li>
             <li style="margin: 10px 0px 10px"><span style="font-size:16px">AWS社内推進・人材育成</span></li>
           </ul>
-        </li>
-        <li style="margin: 10px 0px 10px"><a href="https://aws.amazon.com/jp/partners/ambassadors/?cards-body.sort-by=item.additionalFields.ambassadorName&cards-body.sort-order=asc&cards-body.q=kawabata&cards-body.q_operator=AND" target="_blank">APN AWS Top Engineers &amp; Ambassadors Since 2019</a></li>
-        <li style="margin: 10px 0px 10px">マイナビ「ITSearch+」で記事連載中
+          <li style="margin: 10px 0px 10px"><a href="https://aws.amazon.com/jp/partners/ambassadors/?cards-body.sort-by=item.additionalFields.ambassadorName&cards-body.sort-order=asc&cards-body.q=kawabata&cards-body.q_operator=AND" target="_blank">APN AWS Top Engineers &amp; Ambassadors Since 2019</a></li>
+          <li style="margin: 10px 0px 10px">マイナビ「ITSearch+」で記事連載中
           <ul>
             <li style="margin: 10px 0px 10px">
-              <span style="font-size:16px"><a href="https://news.mynavi.jp/itsearch/series/devsoft/AWS.html" target="_blank">AWSで作るクラウドネイティブアプリケーションの基本</a></span>
+              <span style="font-size:14px"><a href="https://news.mynavi.jp/itsearch/series/devsoft/AWS.html" target="_blank">AWSで作るクラウドネイティブアプリケーションの基本</a></span>
             </li>
             <li style="margin: 10px 0px 10px">
-              <span style="font-size:16px"><a href="https://news.mynavi.jp/itsearch/series/devsoft/aws_adv.html" target="_blank">AWSで作るクラウドネイティブアプリケーションの応用</a></span>
+              <span style="font-size:14px"><a href="https://news.mynavi.jp/itsearch/series/devsoft/aws_adv.html" target="_blank">AWSで作るクラウドネイティブアプリケーションの応用</a></span>
             </li>
             <li style="margin: 10px 0px 10px">
-              <span style="font-size:16px"><a href="https://news.mynavi.jp/itsearch/series/devsoft/AWSAuto.html" target="_blank">AWSで実践! 基盤構築・デプロイ自動化</a></span>
+              <span style="font-size:14px"><a href="https://news.mynavi.jp/itsearch/series/devsoft/AWSAuto.html" target="_blank">AWSで実践! 基盤構築・デプロイ自動化</a></span>
             </li>
             <li style="margin: 10px 0px 10px">
-              <span style="font-size:16px"><a href="https://news.mynavi.jp/itsearch/series/devsoft/aws_2.html" target="_blank">AWSで作るマイクロサービス</a></span>
+              <span style="font-size:14px"><a href="https://news.mynavi.jp/itsearch/series/devsoft/aws_2.html" target="_blank">AWSで作るマイクロサービス</a></span>
             </li>
           </ul>
-        </li>
+          </div>
         </div>
       </ul>
+      </div>
     </section>
     <section id="3">
       <h6>このスライドの使い方</h6>
@@ -97,7 +100,7 @@
       </span>
     </section>
     <section id="4">
-      <section id="4-1">
+      <section id="4-1" data-background="images/microservice-concept.png" style="background-color:rgba(0,0,0,0.75);">
       <h6>マイクロサービス化する典型的なユースケース</h6>
       <div style="margin: 20px 0px 0px">
       <ul>
@@ -239,7 +242,7 @@
             <tbody>
               <tr>
                 <td>Elastic Load Balancing</td>
-                <td>Classic Load Balancer、Application LoadBalancer、Network LoadBalancerで構成されるサービス。ALBでは、各コンテナにデプロイされたマイクロサービスのIP／ポートを意識せずにパスベースでルーティングを行うことができる。詳細は、連載「AWSで作るクラウドネイティブアプリケーションの基本」の第5回を参照のこと。</td>
+                <td>Classic Load Balancer、Application LoadBalancer、Network LoadBalancerで構成されるサービス。ALBでは、各コンテナにデプロイされたマイクロサービスのIP／ポートを意識せずにパスベースでルーティングを行うことができる。詳細は、<a href="https://news.mynavi.jp/itsearch/article/devsoft/4359" target="_blank">連載「AWSで作るクラウドネイティブアプリケーションの基本」の第5回</a>を参照のこと。</td>
               </tr>
               <tr>
                 <td>Route53</td>
@@ -247,7 +250,7 @@
               </tr>
               <tr>
                 <td>Amazon ECS</td>
-                <td>マイクロサービスアプリケーションがデプロイされたDockerコンテナを実行するコンテナオーケストレーションサービス。コンテナの死活監視やオートスケーリングなどを実行する。詳細は、連載「AWSで作るクラウドネイティブアプリケーションの基本」の第4回を参照のこと。</td>
+                <td>マイクロサービスアプリケーションがデプロイされたDockerコンテナを実行するコンテナオーケストレーションサービス。コンテナの死活監視やオートスケーリングなどを実行する。詳細は、<a href="https://news.mynavi.jp/itsearch/article/devsoft/4354" target="_blank">連載「AWSで作るクラウドネイティブアプリケーションの基本」の第4回</a>を参照のこと。</td>
               </tr>
               <tr>
                 <td>Amazon EKS</td>
@@ -255,7 +258,7 @@
               </tr>
               <tr>
                 <td>Amazon ElastiCache</td>
-                <td>複数のマイクロサービスアプリケーションのデータ共有のためのキャッシュストレージとして利用できるサービス。詳細は、連載「AWSで作るクラウドネイティブアプリケーションの基本」の第19回を参照。</td>
+                <td>複数のマイクロサービスアプリケーションのデータ共有のためのキャッシュストレージとして利用できるサービス。詳細は、<a href="https://news.mynavi.jp/itsearch/article/devsoft/4523" target="_blank">連載「AWSで作るクラウドネイティブアプリケーションの基本」の第19回</a>を参照。</td>
               </tr>
             </tbody>
           </table>
@@ -278,15 +281,15 @@
             <tbody>
               <tr>
                 <td>Amazon API Gateway</td>
-                <td>マイクロサービスアプリケーションのAPIゲートウェイとして利用できるサービス。REST APIの定義やデプロイ、サービスへのHTTPリクエスト／レスポンス変換などを実行する。詳細は、連載「AWSで作るクラウドネイティブアプリケーションの基本」の第3回を参照のこと。</td>
+                <td>マイクロサービスアプリケーションのAPIゲートウェイとして利用できるサービス。REST APIの定義やデプロイ、サービスへのHTTPリクエスト／レスポンス変換などを実行する。詳細は、<a href="https://news.mynavi.jp/itsearch/article/devsoft/4321" target="_blank">連載「AWSで作るクラウドネイティブアプリケーションの基本」の第3回</a>を参照のこと。</td>
               </tr>
               <tr>
                 <td>AWS Lambda</td>
-                <td>サーバレスでマイクロサービスアプリケーションの実行が可能なサービス。詳細は、連載「AWSで作るクラウドネイティブアプリケーションの基本」の第2回を参照のこと。</td>
+                <td>サーバレスでマイクロサービスアプリケーションの実行が可能なサービス。詳細は、<a href="https://news.mynavi.jp/itsearch/article/devsoft/4318" target="_blank">連載「AWSで作るクラウドネイティブアプリケーションの基本」の第2回</a>を参照のこと。</td>
               </tr>
               <tr>
-                <td>AWS Cognito★</td>
-                <td>認証／認可サービス。外部の認証Providerとの連携や、IAMロールに応じたAWSリソースへのアクセス制御、マルチデバイス間でデータ同期する機能などもある。</td>
+                <td><span style="color:yellow">AWS Cognito★</span></td>
+                <td><span style="color:yellow">認証／認可サービス。外部の認証Providerとの連携や、IAMロールに応じたAWSリソースへのアクセス制御、マルチデバイス間でデータ同期する機能などもある。</span></td>
               </tr>
               <tr>
                 <td>Cloud Map</td>
@@ -316,16 +319,16 @@
             </thead>
             <tbody>
               <tr>
-                <td>AWS X-Ray★</td>
-                <td>マイクロサービスアプリケーションを分析することができるサービス。サービス実行時間の計測やトレース、フィルタリングによる可視化などが行える。</td>
+                <td><span style="color:yellow">AWS X-Ray★</span></td>
+                <td><span style="color:yellow">マイクロサービスアプリケーションを分析することができるサービス。サービス実行時間の計測やトレース、フィルタリングによる可視化などが行える。詳細は、<a href="https://news.mynavi.jp/itsearch/article/devsoft/5185" target="_blank">連載「AWSで作るマイクロサービス」の第8回</a>を参照のこと。</span></td>
               </tr>
               <tr>
                 <td>Amazon SQS</td>
-                <td>マネージドキューサービス。マイクロサービス間の非同期メッセージ連携などで利用する。詳細は、連載「AWSで作るクラウドネイティブアプリケーションの基本」の第28回を参照のこと。</td>
+                <td>マネージドキューサービス。マイクロサービス間の非同期メッセージ連携などで利用する。詳細は、<a href="https://news.mynavi.jp/itsearch/article/devsoft/4656" target="_blank">連載「AWSで作るクラウドネイティブアプリケーションの基本」の第28回</a>を参照のこと。</td>
               </tr>
               <tr>
                 <td>Amazon SNS</td>
-                <td>Publish/Subscribe型のメッセージ配信サービス。複数のマイクロサービスへメッセージを連携する場合などで利用する。詳細は、連載「AWSで実践！基盤構築・デプロイ自動化」の第18回を参照のこと。</td>
+                <td>Publish/Subscribe型のメッセージ配信サービス。複数のマイクロサービスへメッセージを連携する場合などで利用する。詳細は、<a href="https://news.mynavi.jp/itsearch/article/devsoft/4682" target="_blank">連載「AWSで実践！基盤構築・デプロイ自動化」の第18回</a>を参照のこと。</td>
               </tr>
               <tr>
                 <td>Amazon MSK (Managed Streaming for Apache Kafka)</td>
@@ -366,35 +369,49 @@
                 <span style="font-size:16px">名前くらいなら知ってます。</span>
               </li>
               <li style="margin: 10px 0px 10px">
-                <span style="font-size:16px">骨折した時に病院とかで撮るやつのことですかね(・∀・)？</span>
+                <span style="font-size:16px">知ってます！骨折した時に病院とかで撮るやつ！</span>
               </li>
             </ol>
           </li>
           <br/>
           <li style="margin: 10px 0px 10px">左のQRコードをスマホなどで読み取ってください</li>
-          <li style="margin: 10px 0px 10px">スライドを開いている方は<a href="https://www.menti.com/ar34drvfsj" target="_blank">こちらのリンク</a>から</li>
+          <li style="margin: 10px 0px 10px">スライドを開いている方は<a href="https://www.menti.com/ee2z3shkzu" target="_blank">こちらのリンク</a>から</li>
           </div>
         </ul>
       </section>
       <section id="5-4">
-      <div style='position: relative; padding-bottom: 56.25%; padding-top: 35px; height: 0; overflow: hidden;'><iframe sandbox='allow-scripts allow-same-origin allow-presentation' allowfullscreen='true' allowtransparency='true' frameborder='0' height='315' src='https://www.mentimeter.com/embed/6214d0366aef639eeaaa3ce96c320a93/4b5d460f1ab3' style='position: absolute; top: 0; left: 0; width: 100%; height: 100%;' width='420'></iframe></div><br/>
+      <div style='position: relative; padding-bottom: 56.25%; padding-top: 35px; height: 0; overflow: hidden;'><iframe sandbox='allow-scripts allow-same-origin allow-presentation' allowfullscreen='true' allowtransparency='true' frameborder='0' height='315' src='https://www.mentimeter.com/s/be4ed3fc9c2b8de4465d9c9c189a4365/c3d1522061b0' style='position: absolute; top: 0; left: 0; width: 100%; height: 100%;' width='420'></iframe></div>
+        <span style="margin: 0px;font-size:14px">質問の結果をみるときは左の青いQRコードを、質問に答えるには右の黒いQRコードを読み取ってください</span>
+        <p><img src="images/question1-result-qr-code.png" style="position: absolute;bottom:0px; left:0px; z-index:1" width="10%"></p>
         <p><img src="images/question1-qr-code.png" style="position: absolute;bottom:0px; right:0px; z-index:1" width="10%"></p>
       </section>
       <section id="5-5">
-        百聞は一見にしかず：X-Rayとは
-        <p><img src="images/xray-servicemap.png" width="80%"></p>
+        <span style="margin: 0px;font-size:32px">百聞は一見にしかず：X-Rayとは</span>
+        <p><img style="margin:0" src="images/xray-servicemap.png" width="70%"></p>
+        <span style="margin: 0px;font-size:14px">質問の結果をみるときは左の青いQRコードを、質問に答えるには右の黒いQRコードを読み取ってください</span>
+        <p><img src="images/question1-result-qr-code.png" style="position: absolute;bottom:0px; left:0px; z-index:1" width="10%"></p>
+        <p><img src="images/question1-qr-code.png" style="position: absolute;bottom:0px; right:0px; z-index:1" width="10%"></p>
       </section>
       <section id="5-6">
-        百聞は一見にしかず：X-Rayとは
-        <p><img src="images/xray-start-app-trace.png" width="80%"></p>
+        <span style="margin: 0px;font-size:32px">百聞は一見にしかず：X-Rayとは</span>
+        <p><img  style="margin:0" src="images/xray-start-app-trace.png" width="70%"></p>
+        <span style="margin: 0px;font-size:14px">質問の結果をみるときは左の青いQRコードを、質問に答えるには右の黒いQRコードを読み取ってください</span>
+        <p><img src="images/question1-result-qr-code.png" style="position: absolute;bottom:0px; left:0px; z-index:1" width="10%"></p>
+        <p><img src="images/question1-qr-code.png" style="position: absolute;bottom:0px; right:0px; z-index:1" width="10%"></p>
       </section>
       <section id="5-7">
         X-Rayでメトリクス収集を行う例
-        <p><img src="images/xray-architecture.png" style="border:0px; background:rgba(255, 255, 255, 0)" width="80%"></p>
+        <p><img src="images/xray-architecture.png" style="border:0px; margin: :0;background:rgba(255, 255, 255, 0)" width="70%"></p>
+        <span style="margin: 0px;font-size:14px">質問の結果をみるときは左の青いQRコードを、質問に答えるには右の黒いQRコードを読み取ってください</span>
+        <p><img src="images/question1-result-qr-code.png" style="position: absolute;bottom:0px; left:0px; z-index:1" width="10%"></p>
+        <p><img src="images/question1-qr-code.png" style="position: absolute;bottom:0px; right:0px; z-index:1" width="10%"></p>
       </section>
       <section id="5-8">
         X-Rayへメトリクスデータを送信
-        <p><img src="images/xray-send.png" style="border:0px; background:rgba(255, 255, 255, 0)" width="80%"></p>
+        <p><img src="images/xray-send.png" style="border:0px; margin: :0;background:rgba(255, 255, 255, 0)" width="70%"></p>
+        <span style="margin: 0px;font-size:14px">質問の結果をみるときは左の青いQRコードを、質問に答えるには右の黒いQRコードを読み取ってください</span>
+        <p><img src="images/question1-result-qr-code.png" style="position: absolute;bottom:0px; left:0px; z-index:1" width="10%"></p>
+        <p><img src="images/question1-qr-code.png" style="position: absolute;bottom:0px; right:0px; z-index:1" width="10%"></p>
       </section>
       <section id="5-9">
         [重要]セグメント・サブセグメントの概念
@@ -518,11 +535,11 @@
             <div style="font-size:16px; margin:auto">
             <li style="margin: 15px 0px 15px">@Aspect/@EnableAspectJAutoProxyでAOPの設定を有効化</li>
             <li style="margin: 15px 0px 15px"><a href="https://github.com/aws/aws-xray-sdk-java/blob/master/aws-xray-recorder-sdk-spring/src/main/java/com/amazonaws/xray/spring/aop/AbstractXRayInterceptor.java" target="_blank">AbstractXRayInterceptor</a>(基本的なAOP設定)を継承</li>
-            <li style="margin: 15px 0px 15px">AWSXRayRecorderBuilderにサンプリングルールを設定</li>
-            <li style="margin: 15px 0px 15px">AWSXRayのGlobalRecoderにAWSXRayRecorderBuilderを設定</li>
+            <li style="margin: 15px 0px 15px">AWSXRayRecorderBuilderに<a href="https://github.com/debugroom/mynavi-sample-aws-microservice/blob/master/frontend-webapp/src/main/resources/sampling-rules.json" target="_blank">サンプリングルール</a>を設定</li>
+            <li style="margin: 15px 0px 15px">AWSXRayのGlobalRecoderにAWSXRayRecorderを設定</li>
             <li style="margin: 15px 0px 15px">AWSXRayServletFilterにアプリケーション名を設定</li>
             <li style="margin: 15px 0px 15px">AWSXRayServletFilterで実行順序を優先設定</li>
-            <li style="margin: 15px 0px 15px">AWS SDKクライアントにでGlobalRecoder設定</li>
+            <li style="margin: 15px 0px 15px">AWS SDKクライアントにGlobalRecoder設定</li>
             <li style="margin: 15px 0px 15px">収集対象となるクラスのポイントカット定義を設定</li>
             <li style="margin: 15px 0px 15px">起動時にAWSへのアクセスが実行される場合セグメントを設定</li>
             </div>
@@ -568,20 +585,20 @@
         <div style="width:auto;-webkit-flex : 1 0 400px;-moz-flex : 1 0 400px;flex : 1 0 400px;">
           <ol>
             <div style="font-size:16px; margin:auto">
-            <li style="margin: 15px 0px 15px">WebClientのフィルタでTraceIDを付与するHTTPヘッダに付与する</li>
+            <li style="margin: 15px 0px 15px">WebClientのフィルタでTraceIDをHTTPヘッダに付与する</li>
             <li style="margin: 15px 0px 15px">AWSXRayからセグメント情報を取得し、TraceIDを取得</li>
-            <li style="margin: 15px 0px 15px">TraceIDをリクエストヘッダにセット</li>
+            <li style="margin: 15px 0px 15px">TraceIDをリクエストヘッダ(X-Amzn-Trace-Id)にセット</li>
             </div>
           </ol>
           <ul>
             <div style="font-size:16px; margin:auto">
-              <li style="margin: 15px 0px 15px">実装は<a href="https://github.com/aws/aws-xray-sdk-java/blob/master/aws-xray-recorder-sdk-apache-http/src/main/java/com/amazonaws/xray/proxies/apache/http/TracedHttpClient.java" target="_blank">ApacheHTTP Client拡張ライブラリ</a>を参考</li>
+              <li style="margin: 15px 0px 15px">リクエスト送信の実装は<a href="https://github.com/aws/aws-xray-sdk-java/blob/master/aws-xray-recorder-sdk-apache-http/src/main/java/com/amazonaws/xray/proxies/apache/http/TracedHttpClient.java" target="_blank">ApacheHTTP Client拡張ライブラリ</a>を参考</li>
             </div>
           </ul>
         </div>
       </section>
       <section id="5-11">
-        <p><span style="font-size:24px">収集対象のクラスにアノテーションを付与</span></p>
+        <p><span style="font-size:24px">ポイントカット定義した収集対象のクラスに@XRayEnabledを付与</span></p>
         <div style="display:flex;display:-webkit-flex;display:-moz-flex;">
         <pre style="font-size:8px; margin: 0 16px 0;line-height:1.5em; width:400px">
           <code data-trim class="hljs java">
@@ -641,7 +658,7 @@
       </div>
       </section>
       <section id="5-12" data-background="images/xray-start-app-trace.png" style="background-color:rgba(0,0,0,0.75);" >
-        <p><span style="font-size:24px">X-Rayを使用するメリット</span></p>
+        <p><img class="emoji" alt=":dancers:" src="https://github.githubassets.com/images/icons/emoji/unicode/2622.png?v8"><span style="font-size:24px">X-Rayを使用するメリット</span><img class="emoji" alt=":dancers:" src="https://github.githubassets.com/images/icons/emoji/unicode/1f46f.png?v8"></p>
         <ul>
           <span style="font-size:20px">
             <li style="margin: 15px 0px 15px">
@@ -654,7 +671,7 @@
               S3やSQS、DynamoDBなどAWSサービスへの呼び出しを通して透過的にメトリクス計測ができる
             </li>
             <li style="margin: 15px 0px 15px">
-              AWS Lambdaでの利用他、機械学習サービスDevOps Guruなど他のAWSサービスとも連携できる。
+              AWS Lambdaでの利用他、機械学習サービスDevOps Guruなど他のAWSサービスとも連携できる
             </li>
           </span>
         </ul>
@@ -673,25 +690,25 @@
         <ul>
           <span style="font-size:20px">
             <li style="margin: 15px 0px 15px">
-              サードパーティ含めてクライアントが増えた場合、通常の認証処理だとユーザの管理が煩雑になるので、シンプル化のために
-              サードパーティが個々に取り扱う認証・認可の仕組みに基づいてマイクロサービスにアクセス制御できるようにする。
+              サードパーティ含めてクライアントが増えた場合、マイクロサービス側が通常の認証処理だとユーザの管理・確認が煩雑になるので、シンプル化のために
+              サードパーティ側の認証・認可の仕組みに基づいて発行したアクセストークンを使って、マイクロサービスのアクセスを制御する。
             </li>
             <li style="margin: 15px 0px 15px">
-              JWTによるトークンエンコーディングにより、クライアントが増えた場合のスケーラビリティの確保が容易である
+              JWT形式によるアクセストークンエンコーディングにより、クライアントが増えた場合のスケーラビリティの確保が容易である
             </li>
             <li style="margin: 15px 0px 15px">
-              デファクトスタンダードな認可技術の採用により、様々なプロダクトと連携させたり、品質確保や学習・実装コストの低減を図ることができる。
+              デファクトスタンダードな認可技術の採用により、様々なプロダクトと連携させたり、セキュリティを担保する品質確保や学習・実装コストの低減を図ることができる。
             </li>
           </span>
         </ul>
       </section>
       <section id="6-3" data-background="images/cognito.png" style="background-color:rgba(0,0,0,0.75);">
-          <span style="font-size:24px">OIDCプロバイダとしてAmazon Cognitoで実現する認証・認可<br>
+          <span style="font-size:24px">OIDC(OpenIDConnect)プロバイダとしてAmazon Cognitoで実現する認証・認可<br>
             <a href="https://aws.amazon.com/jp/blogs/news/webinar-bb-amazon-cognito-2020/" target="_blank">[AWS Black Belt Online Seminar] Amazon Cognito</a>
           </span>
       </section>
       <section id="6-4">
-        <p><span style="font-size:24px">Spring Security OAuth2 Support</span></p>
+        <p><span style="font-size:32px">Spring SecurityのOAuth2 Support</span></p>
         <div style="display:flex;display:-webkit-flex;display:-moz-flex;">
         <pre style="font-size:12px; margin: 0;line-height:1.5em; width:400px">
           <code data-trim class="hljs xml">
@@ -726,11 +743,11 @@
                 <li style="margin: 15px 0px 15px">OAuth 2.0 Client</li>
                 <li style="margin: 15px 0px 15px">OAuth 2.0 Resource Server</li>
               </ul>
-              <li style="margin: 15px 0px 15px">以前のSpring Security OAuthはメンテナンスモードへ</li>
+              <li style="margin: 15px 0px 15px">以前のSpring Security OAuthは<a href="https://spring.io/projects/spring-security-oauth" target="_blank">メンテナンスモードへ</a></li>
               <li style="margin: 15px 0px 15px">OAuth 2.0 Authorization Serverは<a href="https://github.com/spring-projects-experimental/spring-authorization-server" target="_blank">コミュニティプロジェクト</a>へ</li>
               <li style="margin: 15px 0px 15px">Thymeleafを使用する場合<a href="https://github.com/thymeleaf/thymeleaf-extras-springsecurity" target="_blank">thymeleaf-extras-springsecurity5</a>を追加</li>
               <li style="margin: 15px 0px 15px">Spring Security 5 OAuthの解説は<a href="https://www.slideshare.net/masatoshitada7/oauth-20spring-security-51-121418814" target="_blank">多田さんのスライド</a>と<a href="https://qiita.com/kazuki43zoo/items/658eabbf0d6a60d3ed89" target="_blank">清水さんのブログ</a>が分かりやすい</li>
-              <li style="margin: 15px 0px 15px">OAuth2の解説は<a href="http://terasolunaorg.github.io/guideline/5.6.0.RELEASE/ja/Security/OAuth.html" target="_blank">TERASOLUNAのガイドライン</a>も参照。<br/>※実装はSpring Security OAuthなので注意</li>
+              <li style="margin: 15px 0px 15px">OAuth2の解説は<a href="http://terasolunaorg.github.io/guideline/5.6.0.RELEASE/ja/Security/OAuth.html" target="_blank">TERASOLUNAのガイドライン</a>も参照。<br/>※ただし実装はSpring Security OAuthなので注意</li>
             </div>
           </ul>
         </div>
@@ -830,18 +847,18 @@
           <ol style="margin-left:30px">
             <div style="font-size:14px; margin:auto">
             <li style="margin: 10px 0px 10px">ユーザプールの構築</li>
-            <ol style="margin-left:10px;list-style-type: lower-latin">
+            <ol style="margin-left:20px;list-style-type: lower-latin">
               <li style="margin: 10px 0px 10px">ユーザディレクトリのスキーマ※カスタム属性も可</li>
               <li style="margin: 10px 0px 10px">パスワードポリシー</li>
             </ol>
             <li style="margin: 10px 0px 10px">アプリケーションクライアントの設定(WebApp)</li>
-            <ol style="margin-left:10px;list-style-type: lower-latin">
+            <ol style="margin-left:20px;list-style-type: lower-latin">
               <li style="margin: 10px 0px 10px">クライアントシークレットを生成</li>
               <li style="margin: 10px 0px 10px">リダイレクトするコールバックURLを指定</li>
               <li style="margin: 10px 0px 10px">サインアウトURLを設定</li>
               <li style="margin: 10px 0px 10px">OAuthフロータイプを認可コードグラントに設定</li>
               <li style="margin: 10px 0px 10px">OAuthスコープを以下に設定
-                <ul style="margin-left:10px">
+                <ul style="margin-left:20px">
                   <li style="margin: 10px 0px 10px">openid</li>
                   <li style="margin: 10px 0px 10px">aws.cognito.signin.user.adimin</li>
                   <li style="margin: 10px 0px 10px">profile</li>
@@ -849,7 +866,7 @@
               </li>
               <li style="margin: 10px 0px 10px">サポートするIDプロバイダをCognitoに設定</li>
               <li style="margin: 10px 0px 10px">認証フローを以下に指定
-                <ul>
+                <ul style="margin-left:20px">
                   <li style="margin: 10px 0px 10px">ADMIN_USER_PASSWORD_AUTH:管理APIユーザー名パスワード認証</li>
                   <li style="margin: 10px 0px 10px">ALLOW_REFRESH_TOKEN_AUTH:リフレッシュトークンベースの認証</li>
                 </ul>
@@ -1397,30 +1414,47 @@
           </ol>
       </section>
       <section id="6-15">
-        <p><span style="font-size:24px">Amazon CognitoをOIDCプロバイダとして使用するメリット</span></p>
+        <p><span style="font-size:24px">Amazon CognitoをOIDCプロバイダとして使用するメリットと注意点</span></p>
         <div style="display:flex;disply:-webkit-flex;display:-moz-flex;">
           <div style="width:auto;-webkit-flex : 1 0 400px;-moz-flex : 1 0 400px;flex : 1 0 400px;">
+            <span style="font-size:20px">[メリット]</span>
             <ul>
-              <span style="font-size:20px">
+              <span style="font-size:16px">
               <li style="margin: 15px 0px 15px">
                 環境構築が容易(CloudFormation設定だけ)で、すぐに可用性高く使える。
               </li>
               <li style="margin: 15px 0px 15px">
-              <a href="https://docs.aws.amazon.com/ja_jp/elasticloadbalancing/latest/application/listener-authenticate-users.html" target="_blank">ALBとの連携も容易で右の図のような構成も可能</a><br/>
+              <a href="https://docs.aws.amazon.com/ja_jp/elasticloadbalancing/latest/application/listener-authenticate-users.html" target="_blank">ALBとの連携も容易で右の図のような構成も可能。</a>認証後はALBがHTTPヘッダにアクセストークンを付与する<br/>
               ※従来通り、API Gateway + Cognitoの構成でもよい
-             </li>
-             <li style="margin: 15px 0px 15px">
-             AWS Lambdaでの利用など、他のAWSサービスとも連携できる。
              </li>
              </span>
            </ul>
+            <span style="font-size:20px">[注意点]</span>
+            <ul>
+              <span style="font-size:16px">
+              <li style="margin: 15px 0px 15px">
+                クライアントシークレットを生成しないモバイルアプリなどは、アクセストークンが奪取されないようPKCEの対応を忘れないようにすること
+              </li>
+            </ul>
           </div>
           <div style="width:auto;-webkit-flex : 1 0 400px;-moz-flex : 1 0 400px;flex : 1 0 400px;">
             <img src="images/alb-oauth2-login.png" width="100%" style="border:0; background:rgba(255, 255, 255, 0)" alt="image"><br/>
           </div>
         </div>
       </section>
-
+      <section id="6-16">
+        <p><span style="font-size:24px">本スライドの詳細は下記の連載で改めて解説予定</span></p>
+        <div style="display:flex;disply:-webkit-flex;display:-moz-flex;">
+          <div style="width:auto;-webkit-flex : 1 0 400px;-moz-flex : 1 0 400px;flex : 1 0 400px;">
+            <a href="https://news.mynavi.jp/itsearch/series/devsoft/aws_2.html" target="_blank"><img src="images/AWSMicroservice.jpg" width="100%" style="border:0; background:rgba(255, 255, 255, 0)" alt="image"></a><br/>
+            <a href="https://news.mynavi.jp/itsearch/series/devsoft/AWSAuto.html" target="_blank"><img src="images/AWSDevOps.jpg" width="100%" style="border:0; background:rgba(255, 255, 255, 0)" alt="image"></a><br/>
+          </div>
+          <div style="width:auto;-webkit-flex : 1 0 400px;-moz-flex : 1 0 400px;flex : 1 0 400px;">
+            <a href="https://news.mynavi.jp/itsearch/series/devsoft/aws_adv.html" target="_blank"><img src="images/AWSCloudNativeAdvance.jpg" width="100%" style="border:0; background:rgba(255, 255, 255, 0)" alt="image"></a><br/>
+            <a href="https://news.mynavi.jp/itsearch/series/devsoft/AWS.html" target="_blank"><img src="images/AWSCloudNative.jpg" width="100%" style="border:0; background:rgba(255, 255, 255, 0)" alt="image"></a><br/>
+          </div>
+        </div>
+      </section>
     </section>
     <section id="7">
       <h6>ご静聴ありがとうございました <img class="emoji" alt=":bow:" src="https://github.githubassets.com/images/icons/emoji/unicode/1f647.png"></h6>
@@ -1501,7 +1535,6 @@
   extend(initializeOptions, configOptions);
   Reveal.initialize(initializeOptions);
 })();
-
 </script>
 
   </body>
